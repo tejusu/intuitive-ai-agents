@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ThemeToggle } from './ThemeToggle';
-import { ChevronDown, Bot, Plane, ShoppingBag, BrainCircuit } from 'lucide-react';
+import { ChevronDown, LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -12,14 +12,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const agents = [
-  { name: 'Pilott Ai', icon: Bot, active: true },
-  { name: 'Travel Planner', icon: Plane, active: false },
-  { name: 'Shopping Assistant', icon: ShoppingBag, active: false },
-  { name: 'Researcher', icon: BrainCircuit, active: false },
-];
+interface Agent {
+  name: string;
+  icon: LucideIcon;
+  active: boolean;
+}
 
-export function Header() {
+interface HeaderProps {
+  agents: Agent[];
+  onAgentChange: (name: string) => void;
+}
+
+export function Header({ agents, onAgentChange }: HeaderProps) {
   const [selectedModel, setSelectedModel] = useState('ChatGPT 4.1');
   const models = ['ChatGPT 4.1', 'O3-2025', 'O4-mini', 'GPT-4o'];
 
@@ -27,7 +31,7 @@ export function Header() {
     <header className="flex h-20 items-center justify-between px-8 border-b">
       <div className="flex items-center gap-2">
         {agents.map((agent) => (
-          <Button key={agent.name} variant={agent.active ? 'secondary' : 'ghost'} className={cn('gap-2 rounded-full', agent.active && 'dark:bg-secondary bg-primary/10 text-primary dark:text-foreground font-semibold')}>
+          <Button key={agent.name} variant={agent.active ? 'secondary' : 'ghost'} className={cn('gap-2 rounded-full', agent.active && 'dark:bg-secondary bg-primary/10 text-primary dark:text-foreground font-semibold')} onClick={() => onAgentChange(agent.name)}>
             <agent.icon className="h-5 w-5" />
             {agent.name}
           </Button>

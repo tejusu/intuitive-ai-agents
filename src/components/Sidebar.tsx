@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
@@ -44,15 +43,12 @@ export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           isCollapsed ? 'w-20 p-2' : 'w-80 p-4'
         )}
       >
-        <div className={cn("flex items-center", isCollapsed ? 'justify-center' : 'justify-between')}>
-          {!isCollapsed && (
-            <div className="flex items-center gap-2">
-              <img src="/lovable-uploads/3e5579ad-76a1-49f7-87bd-c3d03033762a.png" alt="PilottAi Logo" className="h-8 w-8" />
-            </div>
-          )}
-          <Button variant="ghost" size="icon" onClick={() => setIsCollapsed(!isCollapsed)}>
-            <ChevronsLeft className={cn("h-5 w-5", isCollapsed && "rotate-180")} />
-          </Button>
+        <Button variant="outline" size="icon" onClick={() => setIsCollapsed(!isCollapsed)} className="absolute top-5 -right-4 z-10 h-8 w-8 rounded-full">
+          <ChevronsLeft className={cn("h-4 w-4", isCollapsed && "rotate-180")} />
+        </Button>
+
+        <div className={cn("flex items-center", isCollapsed ? 'justify-center' : 'justify-start')}>
+          <img src="/lovable-uploads/3e5579ad-76a1-49f7-87bd-c3d03033762a.png" alt="PilottAi Logo" className="h-8 w-8" />
         </div>
 
         <div className={cn("flex gap-2 mt-8", isCollapsed ? 'flex-col items-center' : 'items-center')}>
@@ -113,28 +109,29 @@ export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             </Accordion>
           )}
         </nav>
-
-        <div className="mt-auto">
-          {!isCollapsed && <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Recent Chats</h3>}
-          <ul className="space-y-1">
-            {recentChats.map((chat, index) => (
-              <li key={index}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <a href="#" className={cn("flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground", isCollapsed ? 'justify-center' : '')}>
-                      <div className="flex items-center gap-3 truncate">
-                        <chat.icon className="h-5 w-5" />
-                        {!isCollapsed && <span className="truncate">{chat.text}</span>}
-                      </div>
-                      {!isCollapsed && <MoreHorizontal className="h-5 w-5 text-muted-foreground" />}
-                    </a>
-                  </TooltipTrigger>
-                  {isCollapsed && <TooltipContent side="right"><p>{chat.text}</p></TooltipContent>}
-                </Tooltip>
-              </li>
-            ))}
-          </ul>
-        </div>
+        
+        {!isCollapsed && (
+          <div className="mt-auto">
+            <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Recent Chats</h3>
+            <ul className="space-y-1">
+              {recentChats.map((chat, index) => (
+                <li key={index}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a href="#" className={cn("flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground")}>
+                        <div className="flex items-center gap-3 truncate">
+                          <chat.icon className="h-5 w-5" />
+                          <span className="truncate">{chat.text}</span>
+                        </div>
+                        <MoreHorizontal className="h-5 w-5 text-muted-foreground" />
+                      </a>
+                    </TooltipTrigger>
+                  </Tooltip>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </TooltipProvider>
   );
