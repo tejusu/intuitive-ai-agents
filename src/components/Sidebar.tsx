@@ -48,7 +48,7 @@ export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         </Button>
 
         <div className={cn("flex items-center", isCollapsed ? 'justify-center' : 'justify-start')}>
-          <img src="/lovable-uploads/3e5579ad-76a1-49f7-87bd-c3d03033762a.png" alt="PilottAi Logo" className="h-8 w-8" />
+          <img src="/lovable-uploads/3e5579ad-76a1-49f7-87bd-c3d03033762a.png" alt="PilottAi Logo" className="h-10 w-10" />
         </div>
 
         <div className="mt-8">

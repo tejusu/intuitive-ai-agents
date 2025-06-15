@@ -29,7 +29,8 @@ export function Header({ agents, onAgentChange }: HeaderProps) {
 
   return (
     <header className="flex h-20 items-center justify-between px-8 border-b">
-      <div className="flex items-center gap-2">
+      <div className="flex-1" />
+      <div className="flex items-center gap-2 justify-center">
         {agents.map((agent) => (
           <Button key={agent.name} variant={agent.active ? 'secondary' : 'ghost'} className={cn('gap-2 rounded-full', agent.active && 'dark:bg-secondary bg-primary/10 text-primary dark:text-foreground font-semibold')} onClick={() => onAgentChange(agent.name)}>
             <agent.icon className="h-5 w-5" />
@@ -37,7 +38,7 @@ export function Header({ agents, onAgentChange }: HeaderProps) {
           </Button>
         ))}
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-1 items-center justify-end gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="gap-2 rounded-full">

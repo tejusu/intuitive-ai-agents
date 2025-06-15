@@ -8,36 +8,36 @@ const agentInfo = {
     title: 'AI Chat',
     subtitle: 'Your AI Chat Companion',
     suggestions: [
-      'What can I ask you to do?',
-      'Which one of my projects is performing the best?',
-      'What projects should I be concerned about right now?',
+      'Draft an email to my team about the new project timeline.',
+      'Give me 10 ideas for a blog post about sustainable living.',
+      "Explain the concept of 'machine learning' in simple terms.",
     ],
   },
   'Travel Planner': {
     title: 'Travel Planner',
     subtitle: 'Let me help you plan your next adventure.',
     suggestions: [
-      'Plan a 7-day trip to Japan for me.',
-      'What are some budget-friendly European destinations?',
-      'Find me a flight to New York for next weekend.',
+      'Create a 5-day itinerary for a relaxing beach vacation in Bali.',
+      'What are the must-see historical sites in Rome?',
+      'Find me unique, non-touristy experiences in Paris.',
     ],
   },
   'Shopping Assistant': {
     title: 'Shopping Assistant',
     subtitle: 'Your personal guide to smart shopping.',
     suggestions: [
-      'Find the best deals on 4K TVs.',
-      'Compare the latest smartphones.',
-      'I need a gift for a coffee lover under $50.',
+      'What are the top-rated noise-cancelling headphones for under $200?',
+      'Help me find a sustainable and ethical brand for everyday basics.',
+      'Compare the new iPhone with the latest Google Pixel.',
     ],
   },
   'Researcher': {
     title: 'Researcher',
     subtitle: 'Get in-depth information on any topic.',
     suggestions: [
-      'What is the impact of AI on modern science?',
-      'Summarize the theory of relativity.',
-      'Find recent papers on quantum computing.',
+      'Summarize the latest breakthroughs in renewable energy technology.',
+      'Provide a detailed overview of the causes of the Great Depression.',
+      'Find academic papers on the psychological effects of social media.',
     ],
   },
 };
@@ -51,7 +51,7 @@ export function ChatView({ activeAgentName }: ChatViewProps) {
   const currentAgentInfo = agentInfo[activeAgentName] || agentInfo['AI Chat'];
 
   return (
-    <div className="flex h-full flex-col p-8">
+    <div className="flex h-full flex-col p-4 md:p-8">
       <div className="flex-1 flex flex-col items-center justify-center text-center">
         <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
           {currentAgentInfo.title}
@@ -78,9 +78,9 @@ export function ChatView({ activeAgentName }: ChatViewProps) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
           {currentAgentInfo.suggestions.map((s, i) => (
-             <Button key={i} variant="outline" className="h-auto text-left justify-start text-muted-foreground hover:bg-accent hover:text-accent-foreground">
+             <div key={i} className="p-4 border rounded-lg hover:bg-accent/50 cursor-pointer transition-colors text-left text-sm text-muted-foreground">
               {s}
-            </Button>
+            </div>
           ))}
         </div>
          <p className="text-center text-xs text-muted-foreground mt-2">Suggestions for {currentAgentInfo.title}</p>
