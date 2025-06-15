@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Paperclip, Mic, ArrowRight, LucideIcon, ThumbsUp, ThumbsDown, RefreshCcw, Edit } from 'lucide-react';
+import { Paperclip, Mic, ArrowRight, LucideIcon, Check, X } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 
 const agentInfo = {
@@ -60,20 +60,38 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
   const currentAgentInfo = agentInfo[activeAgentName] || agentInfo['AI Chat'];
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+  const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleStartEdit = (message: Message) => {
+    setInput(message.text);
+    setEditingMessageId(message.id);
+  };
+
+  const cancelEdit = () => {
+    setInput('');
+    setEditingMessageId(null);
+  };
 
   const handleSendMessage = (e: React.FormEvent, messageText?: string) => {
     e.preventDefault();
     const text = (messageText || input).trim();
     if (!text) return;
 
-    const newMessage = { id: Date.now(), text, sender: 'user' as const };
-    setMessages(prev => [...prev, newMessage]);
+    if (editingMessageId) {
+      setMessages(messages.map(msg => 
+        msg.id === editingMessageId ? { ...msg, text } : msg
+      ));
+      setEditingMessageId(null);
+    } else {
+      const newMessage = { id: Date.now(), text, sender: 'user' as const };
+      setMessages(prev => [...prev, newMessage]);
+    }
     setInput('');
   };
 
   useEffect(() => {
-    if (messages.length > 0 && messages[messages.length - 1].sender === 'user') {
+    if (messages.length > 0 && messages[messages.length - 1].sender === 'user' && !editingMessageId) {
       const timer = setTimeout(() => {
         const aiResponse = { 
           id: Date.now() + 1, 
@@ -84,7 +102,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
       }, 1200);
       return () => clearTimeout(timer);
     }
-  }, [messages, currentAgentInfo.title]);
+  }, [messages, currentAgentInfo.title, editingMessageId]);
   
   useEffect(() => {
     chatContainerRef.current?.scrollTo({
@@ -100,23 +118,29 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
         <div className="w-full max-w-4xl mx-auto">
           {messages.length === 0 ? (
             <div className="text-center mt-16 animate-fade-in">
-              <div className="inline-block p-4 bg-muted rounded-full">
+              <div className="inline-block p-4 bg-primary/10 rounded-full ring-8 ring-primary/5">
                 <ActiveAgentIcon className="h-12 w-12 text-primary" />
               </div>
-              <h1 className="text-4xl font-bold tracking-tight lg:text-5xl mt-4">
+              <h1 className="text-4xl font-bold tracking-tight lg:text-5xl mt-6">
                 {currentAgentInfo.title}
               </h1>
               <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
                 {currentAgentInfo.subtitle}
               </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Using model: {selectedModel}
-              </p>
+              <div className="mt-4 inline-flex items-center justify-center px-4 py-2 bg-muted rounded-full text-sm font-medium">
+                <span className="text-muted-foreground mr-2">Model:</span>
+                <span className="font-semibold text-foreground">{selectedModel}</span>
+              </div>
             </div>
           ) : (
             <div className="space-y-8">
               {messages.map((message) => (
-                <ChatMessage key={message.id} message={message} agentIcon={<ActiveAgentIcon className="h-full w-full text-primary" />} />
+                <ChatMessage 
+                  key={message.id} 
+                  message={message} 
+                  agentIcon={<ActiveAgentIcon className="h-full w-full text-primary" />} 
+                  onStartEdit={handleStartEdit}
+                />
               ))}
             </div>
           )}
@@ -139,6 +163,9 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
           )}
 
           <form onSubmit={handleSendMessage} className="relative">
+            {editingMessageId && (
+              <div className="text-xs text-muted-foreground absolute -top-6 left-2">Editing message...</div>
+            )}
             <Input 
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -146,15 +173,28 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
               className="h-14 rounded-full bg-card/80 backdrop-blur-sm pl-6 pr-40 text-base" 
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-              <Button variant="ghost" size="icon" type="button">
-                <Paperclip className="h-5 w-5 text-muted-foreground" />
-              </Button>
-              <Button variant="ghost" size="icon" type="button">
-                <Mic className="h-5 w-5 text-muted-foreground" />
-              </Button>
-              <Button type="submit" size="icon" className="rounded-full w-10 h-10 bg-primary/90 hover:bg-primary" disabled={!input.trim()}>
-                <ArrowRight className="h-5 w-5" />
-              </Button>
+            {editingMessageId ? (
+                <>
+                  <Button type="submit" size="icon" className="rounded-full w-10 h-10 bg-primary/90 hover:bg-primary" disabled={!input.trim()}>
+                    <Check className="h-5 w-5" />
+                  </Button>
+                  <Button onClick={cancelEdit} variant="ghost" size="icon" type="button" className="rounded-full w-10 h-10">
+                    <X className="h-5 w-5 text-muted-foreground" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" size="icon" type="button">
+                    <Paperclip className="h-5 w-5 text-muted-foreground" />
+                  </Button>
+                  <Button variant="ghost" size="icon" type="button">
+                    <Mic className="h-5 w-5 text-muted-foreground" />
+                  </Button>
+                  <Button type="submit" size="icon" className="rounded-full w-10 h-10 bg-primary/90 hover:bg-primary" disabled={!input.trim()}>
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </>
+              )}
             </div>
           </form>
         </div>
