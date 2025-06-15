@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -37,7 +36,7 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
           </Link>
         ))}
       </div>
-      <div className="absolute right-8 top-1/2 flex -translate-y-1/2 items-center justify-end gap-4">
+      <div className="absolute right-8 top-1/2 flex -translate-y-1/2 items-center justify-end gap-6">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="gap-2 rounded-full">

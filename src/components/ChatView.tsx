@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -116,8 +115,8 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
     <div className="flex h-full flex-col">
       <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6">
         {messages.length === 0 ? (
-          <div className="flex h-full items-center justify-center">
-            <div className="w-full max-w-4xl mx-auto text-center animate-fade-in">
+          <div className="flex justify-center">
+            <div className="w-full max-w-4xl mx-auto text-center animate-fade-in pt-16 md:pt-24">
               <div className="inline-block p-4 bg-primary/10 rounded-full ring-8 ring-primary/5">
                 <ActiveAgentIcon className="h-12 w-12 text-primary" />
               </div>
@@ -150,8 +149,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
       </div>
       
       <div className="px-4 md:px-6 pb-8">
-        <div className="w-full max-w-4xl mx-auto">
-          {messages.length === 0 && (
+        {messages.length === 0 && (
              <div className="mb-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {currentAgentInfo.suggestions.map((s, i) => (
