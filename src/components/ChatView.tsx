@@ -115,9 +115,9 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
   return (
     <div className="flex h-full flex-col">
       <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6">
-        <div className="w-full max-w-4xl mx-auto">
-          {messages.length === 0 ? (
-            <div className="text-center mt-16 animate-fade-in">
+        {messages.length === 0 ? (
+          <div className="flex h-full items-center justify-center">
+            <div className="w-full max-w-4xl mx-auto text-center animate-fade-in">
               <div className="inline-block p-4 bg-primary/10 rounded-full ring-8 ring-primary/5">
                 <ActiveAgentIcon className="h-12 w-12 text-primary" />
               </div>
@@ -132,7 +132,9 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
                 <span className="font-semibold text-foreground">{selectedModel}</span>
               </div>
             </div>
-          ) : (
+          </div>
+        ) : (
+          <div className="w-full max-w-4xl mx-auto">
             <div className="space-y-8">
               {messages.map((message) => (
                 <ChatMessage 
@@ -143,8 +145,8 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
                 />
               ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
       
       <div className="px-4 md:px-6 pb-8">

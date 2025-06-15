@@ -26,8 +26,8 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
   const models = ['ChatGPT 4.1', 'O3-2025', 'O4-mini', 'GPT-4o'];
 
   return (
-    <header className="relative flex h-20 items-center justify-center px-8 border-b">
-      <div className="flex items-center gap-2">
+    <header className="relative flex h-20 items-center px-8 border-b">
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
         {agents.map((agent) => (
           <Link to="/" key={agent.name}>
             <Button variant={agent.active ? 'secondary' : 'ghost'} className={cn('gap-2 rounded-full', agent.active && 'dark:bg-secondary bg-primary/10 text-primary dark:text-foreground font-semibold')} onClick={() => onAgentChange(agent.name)}>
