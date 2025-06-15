@@ -51,26 +51,25 @@ export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           <img src="/lovable-uploads/3e5579ad-76a1-49f7-87bd-c3d03033762a.png" alt="PilottAi Logo" className="h-8 w-8" />
         </div>
 
-        <div className={cn("flex gap-2 mt-8", isCollapsed ? 'flex-col items-center' : 'items-center')}>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="w-10 h-10 rounded-lg">
-                        <Plus className="h-5 w-5" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right"><p>New Chat</p></TooltipContent>
-            </Tooltip>
-             <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="w-10 h-10 rounded-lg">
-                        <History className="h-5 w-5" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right"><p>Chat History</p></TooltipContent>
-            </Tooltip>
+        <div className="mt-8">
+            {isCollapsed ? (
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="outline" size="icon" className="w-10 h-10 rounded-lg mx-auto flex">
+                            <Plus className="h-5 w-5" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right"><p>New Chat</p></TooltipContent>
+                </Tooltip>
+            ) : (
+                <Button className="w-full justify-start text-base font-semibold" size="lg">
+                    <Plus className="h-5 w-5" />
+                    New Chat
+                </Button>
+            )}
         </div>
 
-        <nav className="mt-8 flex-1">
+        <nav className="mt-8">
           {!isCollapsed && <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Category</h3>}
           {isCollapsed ? (
             <ul className="space-y-1">
@@ -111,7 +110,7 @@ export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         </nav>
         
         {!isCollapsed && (
-          <div className="mt-auto">
+          <div className="mt-8">
             <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Recent Chats</h3>
             <ul className="space-y-1">
               {recentChats.map((chat, index) => (
