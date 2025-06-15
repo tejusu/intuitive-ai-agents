@@ -1,7 +1,6 @@
-
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Paperclip, Mic, ArrowRight } from 'lucide-react';
+import { Paperclip, Mic, ArrowRight, LucideIcon } from 'lucide-react';
 
 const agentInfo = {
   'AI Chat': {
@@ -45,45 +44,49 @@ const agentInfo = {
 
 interface ChatViewProps {
   activeAgentName: string;
+  activeAgentIcon: LucideIcon;
 }
 
-export function ChatView({ activeAgentName }: ChatViewProps) {
+export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon }: ChatViewProps) {
   const currentAgentInfo = agentInfo[activeAgentName] || agentInfo['AI Chat'];
 
   return (
-    <div className="flex h-full flex-col p-4 md:p-8">
-      <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-          {currentAgentInfo.title}
-        </h1>
-        <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
-          {currentAgentInfo.subtitle}
-        </p>
-      </div>
+    <div className="flex h-full flex-col items-center justify-center p-4 md:p-8">
+      <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
+        <div className="text-center">
+          <ActiveAgentIcon className="h-12 w-12 mb-4 text-primary mx-auto" />
+          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
+            {currentAgentInfo.title}
+          </h1>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
+            {currentAgentInfo.subtitle}
+          </p>
+        </div>
 
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="relative mb-4">
-          <Button variant="ghost" size="icon" className="absolute left-2 top-1/2 -translate-y-1/2">
-            <Paperclip className="h-5 w-5 text-muted-foreground" />
-          </Button>
-          <Input placeholder={`Message ${currentAgentInfo.title}...`} className="h-14 rounded-full bg-card/80 backdrop-blur-sm pl-12 pr-28 text-base" />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
-            <Button variant="ghost" size="icon">
-              <Mic className="h-5 w-5 text-muted-foreground" />
-            </Button>
-            <Button size="icon" className="rounded-full w-10 h-10 bg-primary/90 hover:bg-primary">
-              <ArrowRight className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-          {currentAgentInfo.suggestions.map((s, i) => (
-             <div key={i} className="p-4 border rounded-lg hover:bg-accent/50 cursor-pointer transition-colors text-left text-sm text-muted-foreground">
-              {s}
+        <div className="w-full mt-8">
+          <div className="relative mb-4">
+            <Input placeholder={`Message ${currentAgentInfo.title}...`} className="h-14 rounded-full bg-card/80 backdrop-blur-sm pl-6 pr-40 text-base" />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+              <Button variant="ghost" size="icon">
+                <Paperclip className="h-5 w-5 text-muted-foreground" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Mic className="h-5 w-5 text-muted-foreground" />
+              </Button>
+              <Button size="icon" className="rounded-full w-10 h-10 bg-primary/90 hover:bg-primary">
+                <ArrowRight className="h-5 w-5" />
+              </Button>
             </div>
-          ))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+            {currentAgentInfo.suggestions.map((s, i) => (
+               <div key={i} className="p-4 border rounded-lg hover:bg-accent/50 cursor-pointer transition-colors text-left text-sm text-muted-foreground">
+                {s}
+              </div>
+            ))}
+          </div>
+           <p className="text-center text-xs text-muted-foreground mt-2">Suggestions for {currentAgentInfo.title}</p>
         </div>
-         <p className="text-center text-xs text-muted-foreground mt-2">Suggestions for {currentAgentInfo.title}</p>
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ const Index = () => {
     })));
   };
 
-  const activeAgent = agents.find(agent => agent.active);
+  const activeAgent = agents.find(agent => agent.active) || initialAgents[0];
 
   return (
     <div className="flex min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -32,7 +32,7 @@ const Index = () => {
       <main className={cn("flex-1 flex flex-col transition-all duration-300 ease-in-out", isSidebarCollapsed ? "ml-20" : "ml-80")}>
         <Header agents={agents} onAgentChange={handleAgentChange} />
         <div className="flex-1">
-           <ChatView activeAgentName={activeAgent?.name || 'AI Chat'} />
+           <ChatView activeAgentName={activeAgent.name} activeAgentIcon={activeAgent.icon} />
         </div>
       </main>
     </div>
