@@ -1,10 +1,8 @@
 
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useTheme } from "next-themes";
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronDown, LucideIcon, Settings, LogOut, Moon, Sun } from 'lucide-react';
+import { ChevronDown, LucideIcon, Settings, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -15,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Agent } from './Layout';
+import { ThemeToggle } from './ThemeToggle';
 
 interface HeaderProps {
   agents: Agent[];
@@ -25,16 +24,17 @@ interface HeaderProps {
 
 export function Header({ agents, onAgentChange, selectedModel, setSelectedModel }: HeaderProps) {
   const models = ['ChatGPT 4.1', 'O3-2025', 'O4-mini', 'GPT-4o'];
-  const { theme, setTheme } = useTheme();
 
   return (
     <header className="relative flex h-20 items-center justify-center px-8 border-b">
       <div className="flex items-center gap-2">
         {agents.map((agent) => (
-          <Button key={agent.name} variant={agent.active ? 'secondary' : 'ghost'} className={cn('gap-2 rounded-full', agent.active && 'dark:bg-secondary bg-primary/10 text-primary dark:text-foreground font-semibold')} onClick={() => onAgentChange(agent.name)}>
-            <agent.icon className="h-5 w-5" />
-            {agent.name}
-          </Button>
+          <Link to="/" key={agent.name}>
+            <Button variant={agent.active ? 'secondary' : 'ghost'} className={cn('gap-2 rounded-full', agent.active && 'dark:bg-secondary bg-primary/10 text-primary dark:text-foreground font-semibold')} onClick={() => onAgentChange(agent.name)}>
+              <agent.icon className="h-5 w-5" />
+              {agent.name}
+            </Button>
+          </Link>
         ))}
       </div>
       <div className="absolute right-8 top-1/2 flex -translate-y-1/2 items-center justify-end gap-4">
@@ -53,6 +53,8 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        
+        <ThemeToggle />
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -78,10 +80,6 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="cursor-pointer">
-              {theme === 'dark' ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
-              <span>Toggle Theme</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer">
