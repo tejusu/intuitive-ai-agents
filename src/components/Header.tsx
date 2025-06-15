@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from "next-themes";
@@ -18,17 +19,17 @@ import { Agent } from './Layout';
 interface HeaderProps {
   agents: Agent[];
   onAgentChange: (name: string) => void;
+  selectedModel: string;
+  setSelectedModel: (model: string) => void;
 }
 
-export function Header({ agents, onAgentChange }: HeaderProps) {
-  const [selectedModel, setSelectedModel] = useState('ChatGPT 4.1');
+export function Header({ agents, onAgentChange, selectedModel, setSelectedModel }: HeaderProps) {
   const models = ['ChatGPT 4.1', 'O3-2025', 'O4-mini', 'GPT-4o'];
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="flex h-20 items-center justify-between px-8 border-b">
-      <div className="flex-1" />
-      <div className="flex items-center gap-2 justify-center">
+    <header className="relative flex h-20 items-center justify-center px-8 border-b">
+      <div className="flex items-center gap-2">
         {agents.map((agent) => (
           <Button key={agent.name} variant={agent.active ? 'secondary' : 'ghost'} className={cn('gap-2 rounded-full', agent.active && 'dark:bg-secondary bg-primary/10 text-primary dark:text-foreground font-semibold')} onClick={() => onAgentChange(agent.name)}>
             <agent.icon className="h-5 w-5" />
@@ -36,7 +37,7 @@ export function Header({ agents, onAgentChange }: HeaderProps) {
           </Button>
         ))}
       </div>
-      <div className="flex flex-1 items-center justify-end gap-4">
+      <div className="absolute right-8 top-1/2 flex -translate-y-1/2 items-center justify-end gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="gap-2 rounded-full">

@@ -53,9 +53,10 @@ interface Message {
 interface ChatViewProps {
   activeAgentName: string;
   activeAgentIcon: LucideIcon;
+  selectedModel: string;
 }
 
-export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon }: ChatViewProps) {
+export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, selectedModel }: ChatViewProps) {
   const currentAgentInfo = agentInfo[activeAgentName] || agentInfo['AI Chat'];
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -107,6 +108,9 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon }: 
               </h1>
               <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
                 {currentAgentInfo.subtitle}
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Using model: {selectedModel}
               </p>
             </div>
           ) : (

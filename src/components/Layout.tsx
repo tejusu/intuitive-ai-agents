@@ -22,6 +22,7 @@ const initialAgents: Agent[] = [
 const Layout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [agents, setAgents] = useState(initialAgents);
+  const [selectedModel, setSelectedModel] = useState('ChatGPT 4.1');
 
   const handleAgentChange = (agentName: string) => {
     setAgents(agents.map(agent => ({
@@ -36,9 +37,14 @@ const Layout = () => {
     <div className="flex min-h-screen bg-background text-foreground overflow-x-hidden">
       <Sidebar isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
       <main className={cn("flex-1 flex flex-col transition-all duration-300 ease-in-out", isSidebarCollapsed ? "ml-20" : "ml-80")}>
-        <Header agents={agents} onAgentChange={handleAgentChange} />
+        <Header 
+          agents={agents} 
+          onAgentChange={handleAgentChange}
+          selectedModel={selectedModel}
+          setSelectedModel={setSelectedModel}
+        />
         <div className="flex-1 overflow-y-auto">
-           <Outlet context={{ activeAgent }} />
+           <Outlet context={{ activeAgent, selectedModel }} />
         </div>
       </main>
     </div>

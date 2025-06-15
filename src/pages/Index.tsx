@@ -5,10 +5,11 @@ import { Agent } from '@/components/Layout';
 
 interface OutletContextType {
   activeAgent: Agent;
+  selectedModel: string;
 }
 
 const Index = () => {
-  const { activeAgent } = useOutletContext<OutletContextType>();
+  const { activeAgent, selectedModel } = useOutletContext<OutletContextType>();
 
   if (!activeAgent) {
     return null; // Or a loading state
@@ -16,7 +17,11 @@ const Index = () => {
 
   return (
     <div className="h-full">
-      <ChatView activeAgentName={activeAgent.name} activeAgentIcon={activeAgent.icon} />
+      <ChatView 
+        activeAgentName={activeAgent.name} 
+        activeAgentIcon={activeAgent.icon} 
+        selectedModel={selectedModel} 
+      />
     </div>
   );
 };
