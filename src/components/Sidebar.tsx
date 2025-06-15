@@ -1,18 +1,20 @@
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import {
   ChevronsLeft,
   Plus,
-  Search,
   MessageSquare,
   Compass,
   ShoppingCart,
   FlaskConical,
   MoreHorizontal,
+  History,
+  Plane,
+  ShoppingBag,
 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -20,79 +22,120 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { icon: MessageSquare, label: 'Chat' },
-  { icon: Compass, label: 'Travel Planner' },
-  { icon: ShoppingCart, label: 'Shopping Assistant' },
-  { icon: FlaskConical, label: 'Research' },
+  { icon: MessageSquare, label: 'Chat', history: ['How to use Tailwind CSS?', 'React best practices'] },
+  { icon: Compass, label: 'Travel Planner', history: ['Trip to Japan', 'Weekend getaway ideas'] },
+  { icon: ShoppingCart, label: 'Shopping Assistant', history: ['Best budget laptops', 'Camera recommendations'] },
+  { icon: FlaskConical, label: 'Research', history: ['AI impact on jobs', 'Quantum computing explained'] },
 ];
 
 const recentChats = [
-  'How can I increase the number ...',
-  "What's the best approach to ...",
-  "What's the best approach to ...",
+    { text: 'How can I increase the number ...', icon: MessageSquare },
+    { text: "What's the best approach to ...", icon: MessageSquare },
+    { text: 'Plan a trip to Italy', icon: Plane },
+    { text: 'Find deals on electronics', icon: ShoppingBag },
 ];
 
 export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   return (
-    <div
-      className={cn(
-        "relative flex h-screen flex-col bg-card text-card-foreground border-r transition-all duration-300 ease-in-out",
-        isCollapsed ? 'w-20' : 'w-80 p-4'
-      )}
-    >
-      <div className={cn("flex items-center", isCollapsed ? 'justify-center p-4' : 'justify-between')}>
-        {!isCollapsed && (
-          <div className="flex items-center gap-2">
-            <img src="/lovable-uploads/3e5579ad-76a1-49f7-87bd-c3d03033762a.png" alt="PilottAi Logo" className="h-8 w-8" />
-            <span className="text-xl font-bold">PilottAi</span>
-          </div>
+    <TooltipProvider delayDuration={0}>
+      <div
+        className={cn(
+          "relative flex h-screen flex-col bg-card text-card-foreground border-r transition-all duration-300 ease-in-out",
+          isCollapsed ? 'w-20 p-2' : 'w-80 p-4'
         )}
-        <Button variant="ghost" size="icon" onClick={() => setIsCollapsed(!isCollapsed)} className={cn(isCollapsed && 'absolute top-4 right-1/2 translate-x-1/2')}>
-          <ChevronsLeft className={cn("h-5 w-5", isCollapsed && "rotate-180")} />
-        </Button>
-      </div>
+      >
+        <div className={cn("flex items-center", isCollapsed ? 'justify-center' : 'justify-between')}>
+          {!isCollapsed && (
+            <div className="flex items-center gap-2">
+              <img src="/lovable-uploads/3e5579ad-76a1-49f7-87bd-c3d03033762a.png" alt="PilottAi Logo" className="h-8 w-8" />
+            </div>
+          )}
+          <Button variant="ghost" size="icon" onClick={() => setIsCollapsed(!isCollapsed)}>
+            <ChevronsLeft className={cn("h-5 w-5", isCollapsed && "rotate-180")} />
+          </Button>
+        </div>
 
-      <div className={cn("flex flex-col gap-4 mt-4", isCollapsed ? 'px-2' : '')}>
-        <Button className={cn("w-full bg-primary/90 hover:bg-primary text-primary-foreground", isCollapsed ? 'px-2' : 'justify-start gap-2')}>
-          <Plus className="h-5 w-5" />
-          {!isCollapsed && <span>New Chat</span>}
-        </Button>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input placeholder={!isCollapsed ? "Search" : ""} className="pl-10" />
+        <div className={cn("flex gap-2 mt-8", isCollapsed ? 'flex-col items-center' : 'items-center')}>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon" className="w-10 h-10 rounded-lg">
+                        <Plus className="h-5 w-5" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right"><p>New Chat</p></TooltipContent>
+            </Tooltip>
+             <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="w-10 h-10 rounded-lg">
+                        <History className="h-5 w-5" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right"><p>Chat History</p></TooltipContent>
+            </Tooltip>
+        </div>
+
+        <nav className="mt-8 flex-1">
+          {!isCollapsed && <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Category</h3>}
+          {isCollapsed ? (
+            <ul className="space-y-1">
+              {navItems.map(item => (
+                <li key={item.label}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a href="#" className="flex items-center justify-center gap-3 rounded-md p-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+                        <item.icon className="h-5 w-5" />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent side="right"><p>{item.label}</p></TooltipContent>
+                  </Tooltip>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Accordion type="single" collapsible className="w-full">
+              {navItems.map(item => (
+                <AccordionItem value={item.label} key={item.label} className="border-none">
+                  <AccordionTrigger className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground hover:no-underline">
+                    <div className="flex items-center gap-3">
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.label}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="pl-11 space-y-1 py-1">
+                      {item.history.map((chat, index) => (
+                        <li key={index} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer truncate">{chat}</li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
+        </nav>
+
+        <div className="mt-auto">
+          {!isCollapsed && <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Recent Chats</h3>}
+          <ul className="space-y-1">
+            {recentChats.map((chat, index) => (
+              <li key={index}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <a href="#" className={cn("flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground", isCollapsed ? 'justify-center' : '')}>
+                      <div className="flex items-center gap-3 truncate">
+                        <chat.icon className="h-5 w-5" />
+                        {!isCollapsed && <span className="truncate">{chat.text}</span>}
+                      </div>
+                      {!isCollapsed && <MoreHorizontal className="h-5 w-5 text-muted-foreground" />}
+                    </a>
+                  </TooltipTrigger>
+                  {isCollapsed && <TooltipContent side="right"><p>{chat.text}</p></TooltipContent>}
+                </Tooltip>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-
-      <nav className="mt-8 flex-1">
-        {!isCollapsed && <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Category</h3>}
-        <ul className="space-y-1">
-          {navItems.map(item => (
-            <li key={item.label}>
-              <a href="#" className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground", isCollapsed ? 'justify-center' : '')}>
-                <item.icon className="h-5 w-5" />
-                {!isCollapsed && <span>{item.label}</span>}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="mt-auto">
-        {!isCollapsed && <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Recent Chats</h3>}
-        <ul className="space-y-1">
-          {recentChats.map((chat, index) => (
-            <li key={index}>
-              <a href="#" className={cn("flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground", isCollapsed ? 'justify-center' : '')}>
-                <div className="flex items-center gap-3 truncate">
-                  <MessageSquare className="h-5 w-5" />
-                  {!isCollapsed && <span className="truncate">{chat}</span>}
-                </div>
-                {!isCollapsed && <MoreHorizontal className="h-5 w-5 text-muted-foreground" />}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    </TooltipProvider>
   );
 }

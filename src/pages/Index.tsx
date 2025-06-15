@@ -9,7 +9,7 @@ const Index = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen bg-background text-foreground overflow-x-hidden">
       <Sidebar isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
       <main className={cn("flex-1 flex flex-col transition-all duration-300 ease-in-out", isSidebarCollapsed ? "ml-20" : "ml-80")}>
         <Header />
@@ -22,4 +22,3 @@ const Index = () => {
 };
 
 export default Index;
-
