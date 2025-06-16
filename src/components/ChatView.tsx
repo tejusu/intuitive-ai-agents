@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -78,22 +77,6 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
     setShowTravelForm(false);
     setShowShoppingForm(false);
     setInput('');
-    
-    if (activeAgentName === 'Travel Planner') {
-        const welcomeMessage: Message = {
-            id: Date.now(),
-            sender: 'ai',
-            text: "Hello! I'm your AI travel assistant. I can help you plan amazing trips! Just mention where you'd like to go or ask about travel planning."
-        };
-        setMessages([welcomeMessage]);
-    } else if (activeAgentName === 'Shopping Assistant') {
-        const welcomeMessage: Message = {
-            id: Date.now(),
-            sender: 'ai',
-            text: "Hi there! I'm your shopping assistant. I can help you find the perfect products based on your needs and budget. What are you looking to buy today?"
-        };
-        setMessages([welcomeMessage]);
-    }
   }, [activeAgentName]);
 
   const handleStartEdit = (message: Message) => {
