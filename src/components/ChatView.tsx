@@ -1,9 +1,11 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Paperclip, Mic, ArrowRight, LucideIcon, Check, X } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { TravelPlannerForm, TravelPlanFormValues } from './TravelPlannerForm';
+import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
 
 const agentInfo = {
   'AI Chat': {
@@ -50,6 +52,8 @@ interface Message {
   sender: 'user' | 'ai';
   isTravelPlan?: boolean;
   planDetails?: TravelPlanFormValues;
+  isShoppingResponse?: boolean;
+  shoppingQuery?: string;
 }
 
 interface ChatViewProps {
@@ -65,17 +69,28 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
   const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [showTravelForm, setShowTravelForm] = useState(false);
+  const [showShoppingForm, setShowShoppingForm] = useState(false);
   const [currentPlanDetails, setCurrentPlanDetails] = useState<TravelPlanFormValues | undefined>();
+  const [currentShoppingDetails, setCurrentShoppingDetails] = useState<ShoppingFormValues | undefined>();
 
   useEffect(() => {
     setMessages([]);
     setShowTravelForm(false);
+    setShowShoppingForm(false);
     setInput('');
+    
     if (activeAgentName === 'Travel Planner') {
         const welcomeMessage: Message = {
             id: Date.now(),
             sender: 'ai',
             text: "Hello! I'm your AI travel assistant. I can help you plan amazing trips! Just mention where you'd like to go or ask about travel planning."
+        };
+        setMessages([welcomeMessage]);
+    } else if (activeAgentName === 'Shopping Assistant') {
+        const welcomeMessage: Message = {
+            id: Date.now(),
+            sender: 'ai',
+            text: "Hi there! I'm your shopping assistant. I can help you find the perfect products based on your needs and budget. What are you looking to buy today?"
         };
         setMessages([welcomeMessage]);
     }
@@ -104,8 +119,11 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
     } else {
       const newMessage = { id: Date.now(), text, sender: 'user' as const };
       setMessages(prev => [...prev, newMessage]);
+      
       if (activeAgentName === 'Travel Planner') {
         setShowTravelForm(true);
+      } else if (activeAgentName === 'Shopping Assistant') {
+        setShowShoppingForm(true);
       }
     }
     setInput('');
@@ -133,12 +151,49 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
     setShowTravelForm(false);
   }
 
+  const handleShoppingFormSubmit = (values: ShoppingFormValues) => {
+    setCurrentShoppingDetails(values);
+    const userMessageText = `I'm looking for ${values.query} in the ${values.category} category with a budget of ${values.budget}.`;
+    
+    const userMessage: Message = {
+        id: Date.now(),
+        text: userMessageText,
+        sender: 'user',
+    };
+    
+    const aiResponse: Message = {
+        id: Date.now() + 1,
+        sender: 'ai',
+        text: 'Shopping recommendations',
+        isShoppingResponse: true,
+        shoppingQuery: values.query
+    };
+
+    setMessages(prev => [...prev, userMessage, aiResponse]);
+    setShowShoppingForm(false);
+  }
+
   const handleUpdatePlan = () => {
     setShowTravelForm(true);
   };
 
+  const handleRegenerateShoppingResults = (query: string) => {
+    const aiResponse: Message = {
+        id: Date.now(),
+        sender: 'ai',
+        text: 'Updated shopping recommendations',
+        isShoppingResponse: true,
+        shoppingQuery: query
+    };
+    setMessages(prev => [...prev, aiResponse]);
+  };
+
   useEffect(() => {
     if (activeAgentName === 'Travel Planner' && showTravelForm) {
+      return;
+    }
+
+    if (activeAgentName === 'Shopping Assistant' && showShoppingForm) {
       return;
     }
 
@@ -153,7 +208,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
       }, 1200);
       return () => clearTimeout(timer);
     }
-  }, [messages, currentAgentInfo.title, editingMessageId, activeAgentName, showTravelForm]);
+  }, [messages, currentAgentInfo.title, editingMessageId, activeAgentName, showTravelForm, showShoppingForm]);
   
   useEffect(() => {
     chatContainerRef.current?.scrollTo({
@@ -161,7 +216,6 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
       behavior: 'smooth'
     });
   }, [messages]);
-
 
   return (
     <div className="flex h-full flex-col">
@@ -194,6 +248,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
                   agentIcon={<ActiveAgentIcon className="h-full w-full text-primary" />} 
                   onStartEdit={handleStartEdit}
                   onUpdatePlan={handleUpdatePlan}
+                  onRegenerateShoppingResults={handleRegenerateShoppingResults}
                 />
               ))}
             </div>
@@ -205,6 +260,8 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
         <div className="w-full max-w-4xl mx-auto">
           {activeAgentName === 'Travel Planner' && showTravelForm ? (
             <TravelPlannerForm onSubmit={handleTravelFormSubmit} initialValues={currentPlanDetails} />
+          ) : activeAgentName === 'Shopping Assistant' && showShoppingForm ? (
+            <ShoppingAssistantForm onSubmit={handleShoppingFormSubmit} initialValues={currentShoppingDetails} />
           ) : (
             <>
               {messages.length === 0 && (

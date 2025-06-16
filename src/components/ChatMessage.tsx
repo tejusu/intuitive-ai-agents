@@ -1,12 +1,12 @@
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ThumbsUp, ThumbsDown, RefreshCcw, Edit, Copy, Download, Repeat, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import jsPDF from 'jspdf';
 import { TravelPlanFormValues } from './TravelPlannerForm';
+import { Input } from '@/components/ui/input';
 
 interface Message {
   id: number;
@@ -14,6 +14,8 @@ interface Message {
   sender: 'user' | 'ai';
   isTravelPlan?: boolean;
   planDetails?: TravelPlanFormValues;
+  isShoppingResponse?: boolean;
+  shoppingQuery?: string;
 }
 
 interface ChatMessageProps {
@@ -21,10 +23,12 @@ interface ChatMessageProps {
   agentIcon: React.ReactNode;
   onStartEdit: (message: Message) => void;
   onUpdatePlan?: () => void;
+  onRegenerateShoppingResults?: (query: string) => void;
 }
 
-export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan }: ChatMessageProps) {
+export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onRegenerateShoppingResults }: ChatMessageProps) {
   const isAi = message.sender === 'ai';
+  const [changeRequest, setChangeRequest] = useState('');
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.text).then(() => {
@@ -42,6 +46,20 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan }: C
     } catch (error) {
       console.error("Failed to generate PDF", error);
       toast.error("Failed to download PDF.");
+    }
+  };
+
+  const handleSubmitChanges = () => {
+    if (changeRequest.trim() && onUpdatePlan) {
+      toast.success('Changes requested! Updating plan...');
+      onUpdatePlan();
+      setChangeRequest('');
+    }
+  };
+
+  const handleRegenerateProducts = () => {
+    if (message.shoppingQuery && onRegenerateShoppingResults) {
+      onRegenerateShoppingResults(message.shoppingQuery);
     }
   };
 
@@ -223,6 +241,26 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan }: C
               </div>
             </div>
 
+            {/* Want to make changes section */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold mb-3">Want to make changes?</h3>
+              <div className="flex gap-2">
+                <Input
+                  value={changeRequest}
+                  onChange={(e) => setChangeRequest(e.target.value)}
+                  placeholder="e.g., 'Add more adventure activities' or 'Find cheaper hotels'"
+                  className="flex-1"
+                />
+                <Button 
+                  onClick={handleSubmitChanges}
+                  className="bg-slate-800 hover:bg-slate-700 text-white px-6"
+                  disabled={!changeRequest.trim()}
+                >
+                  Update Plan
+                </Button>
+              </div>
+            </div>
+
             {/* Action Buttons */}
             <div className="flex gap-2 pt-4 border-t">
               <Button onClick={handleDownloadPdf} variant="outline" size="sm" className="flex-1">
@@ -235,11 +273,66 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan }: C
               </Button>
             </div>
           </div>
+        ) : message.isShoppingResponse ? (
+          <div className="space-y-6 bg-white rounded-lg p-6 shadow-lg">
+            <div className="bg-blue-500 text-white p-4 rounded-t-lg -m-6 mb-6">
+              <h2 className="text-lg font-bold">Here are some product recommendations for you!</h2>
+            </div>
+            
+            <div className="mb-4">
+              <h3 className="text-md font-semibold mb-3">Here are some suggestions for "{message.shoppingQuery}"</h3>
+            </div>
+
+            {/* Product Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="border rounded-lg p-4">
+                <div className="h-32 bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
+                  <div className="text-gray-400">📱</div>
+                </div>
+                <h4 className="font-semibold text-sm">Premium Wireless Headphones</h4>
+                <p className="text-xs text-gray-600 mb-2">Noise-cancelling over-ear headphones with 30-hour battery life</p>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold">$199.99</span>
+                  <span className="text-xs text-gray-500">Rating: 4.8/5</span>
+                </div>
+                <Button size="sm" variant="outline" className="w-full mt-2">
+                  View Product
+                </Button>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <div className="h-32 bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
+                  <div className="text-gray-400">⌚</div>
+                </div>
+                <h4 className="font-semibold text-sm">Smart Fitness Watch</h4>
+                <p className="text-xs text-gray-600 mb-2">Track your workouts, heart rate, and sleep patterns</p>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold">$249.50</span>
+                  <span className="text-xs text-gray-500">Rating: 4.6/5</span>
+                </div>
+                <Button size="sm" variant="outline" className="w-full mt-2">
+                  View Product
+                </Button>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2 pt-4 border-t">
+              <Button onClick={handleRegenerateProducts} variant="outline" size="sm" className="flex-1">
+                <RefreshCcw className="h-4 w-4 mr-2" />
+                Regenerate
+              </Button>
+              <Button variant="outline" size="sm" className="flex-1">
+                <ThumbsUp className="h-4 w-4 mr-2" />
+                Like
+              </Button>
+            </div>
+          </div>
         ) : (
           <p className="whitespace-pre-wrap">{message.text}</p>
         )}
         
-        {isAi && !message.isTravelPlan && (
+        {isAi && !message.isTravelPlan && !message.isShoppingResponse && (
           <div className="absolute bottom-3 right-3 flex items-center gap-1 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
             <Button onClick={handleCopy} variant="ghost" size="icon" className="h-7 w-7 hover:text-primary hover:bg-primary/10 rounded-full">
               <Copy className="h-4 w-4" />
