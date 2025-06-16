@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -121,10 +122,105 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
         sender: 'user',
     };
     
+    const comprehensiveTravelPlan = `📋 **COMPLETE TRAVEL PLAN FOR ${values.destination.toUpperCase()}**
+============================================================
+
+### 🌟 Destination Overview
+${values.destination} is a vibrant destination offering a perfect blend of culture, adventure, and relaxation. This ${values.days}-day itinerary is specially crafted for ${values.travelers} traveler(s) with a focus on ${values.interests}.
+
+### 📅 Travel Details
+- **Duration**: ${values.days} days
+- **Travelers**: ${values.travelers} person/people  
+- **Budget Range**: ${values.budget}
+- **Travel Style**: ${values.style}
+- **Interests**: ${values.interests}
+
+### 🗓️ Day-by-Day Itinerary
+
+**Day 1: Arrival & First Impressions**
+- Morning: Arrival and hotel check-in
+- Afternoon: Local orientation walk and nearby attractions
+- Evening: Welcome dinner at a highly-rated local restaurant
+- Overnight: Premium accommodation in central location
+
+**Day 2: Cultural Immersion**
+- Morning: Visit to historical landmarks and cultural sites
+- Afternoon: Museum tours and heritage walks
+- Evening: Traditional cultural show or local entertainment
+- Meals: Authentic local cuisine experiences
+
+**Day 3: Adventure & Nature**
+- Morning: Outdoor adventure activities based on your interests
+- Afternoon: Nature exploration and scenic viewpoints
+- Evening: Sunset viewing at premium location
+- Activities: Photography opportunities and nature walks
+
+${values.days > 3 ? `**Day 4: Local Experiences**
+- Morning: Local market visits and shopping
+- Afternoon: Hands-on cultural workshops or cooking classes
+- Evening: Social activities and nightlife exploration
+- Focus: Authentic local interactions and experiences
+
+` : ''}${values.days > 4 ? `**Day 5: Relaxation & Wellness**
+- Morning: Spa treatments and wellness activities
+- Afternoon: Beach time or peaceful nature retreat
+- Evening: Fine dining experience
+- Theme: Rest and rejuvenation
+
+` : ''}${values.days > 5 ? `**Day 6: Hidden Gems**
+- Morning: Off-the-beaten-path locations
+- Afternoon: Unique local experiences
+- Evening: Special farewell arrangements
+- Discovery: Secret spots and local favorites
+
+` : ''}**Final Day: Departure**
+- Morning: Last-minute shopping and souvenirs
+- Afternoon: Final destination highlights
+- Evening: Departure preparations and airport transfer
+
+### 💰 Budget Breakdown (${values.budget} Range)
+
+**Accommodation**: ${values.budget === 'Budget-friendly' ? '₹2,000-3,000/night' : values.budget === 'Mid-range' ? '₹4,000-7,000/night' : '₹10,000+/night'}
+**Food & Dining**: ${values.budget === 'Budget-friendly' ? '₹500-800/day' : values.budget === 'Mid-range' ? '₹1,000-2,000/day' : '₹3,000+/day'}
+**Transportation**: ${values.budget === 'Budget-friendly' ? '₹300-500/day' : values.budget === 'Mid-range' ? '₹800-1,500/day' : '₹2,000+/day'}
+**Activities**: ${values.budget === 'Budget-friendly' ? '₹1,000-2,000/day' : values.budget === 'Mid-range' ? '₹3,000-5,000/day' : '₹8,000+/day'}
+**Shopping**: ${values.budget === 'Budget-friendly' ? '₹2,000 total' : values.budget === 'Mid-range' ? '₹5,000 total' : '₹15,000+ total'}
+
+**Total Estimated Cost**: ${values.budget === 'Budget-friendly' ? `₹${(values.days * 3500) + 5000}` : values.budget === 'Mid-range' ? `₹${(values.days * 8000) + 10000}` : `₹${(values.days * 15000) + 25000}`}
+
+### 🎯 Special Recommendations
+
+**Must-Visit Attractions**: Top-rated landmarks and experiences
+**Local Cuisine**: Signature dishes and recommended restaurants  
+**Shopping Spots**: Best markets and unique souvenir locations
+**Photography Points**: Instagram-worthy locations and scenic spots
+**Safety Tips**: Important local guidelines and emergency contacts
+
+### 📱 Essential Apps & Services
+- **Booking**: MakeMyTrip, OYO, Airbnb
+- **Transportation**: Uber, Ola, Local taxi services
+- **Food**: Zomato, Swiggy for delivery
+- **Navigation**: Google Maps, Maps.me offline
+- **Translation**: Google Translate for local communication
+
+### 🌤️ Weather & Packing Tips
+Based on the season and destination climate, pack accordingly with weather-appropriate clothing, comfortable walking shoes, and any specific gear for planned activities.
+
+### 📞 Emergency Contacts & Important Numbers
+- Local Emergency Services
+- Tourist Helpline
+- Hotel/Accommodation Contact
+- Local Hospital Information
+
+---
+*This comprehensive travel plan is designed to give you an amazing ${values.style.toLowerCase()} experience in ${values.destination}. Each day offers a perfect balance of planned activities and free time to explore at your own pace.*
+
+**Ready to embark on your dream trip? 🌍✈️**`;
+    
     const aiResponse: Message = {
         id: Date.now() + 1,
         sender: 'ai',
-        text: `Wonderful! Here is a creative and visually appealing travel plan for your trip to ${values.destination}:\n\n- **Duration**: ${values.days} days\n- **Travelers**: ${values.travelers} person/people\n- **Budget**: ${values.budget}\n- **Interests**: ${values.interests}\n- **Travel Style**: ${values.style}\n\nThis is a sample plan. A full implementation would provide a day-by-day itinerary with activities, restaurant suggestions, and more, all based on your preferences. Enjoy your trip planning!`,
+        text: comprehensiveTravelPlan,
         isTravelPlan: true,
         planDetails: values
     };
@@ -167,7 +263,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
     <div className="flex h-full flex-col">
       <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6">
         {messages.length === 0 ? (
-           <div className="flex justify-center">
+          <div className="flex justify-center">
             <div className="w-full max-w-4xl mx-auto text-center animate-fade-in pt-16 md:pt-24">
               <div className="inline-block p-4 bg-primary/10 rounded-full ring-8 ring-primary/5">
                 <ActiveAgentIcon className="h-12 w-12 text-primary" />
