@@ -122,18 +122,18 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
         isAi && 'group-hover:pb-12'
       )}>
         {message.isTravelPlan ? (
-          <div className="space-y-6 bg-gradient-to-br from-background to-background/50 dark:from-gray-900 dark:to-gray-800 rounded-lg p-6 shadow-xl border border-border/50">
+          <div className="space-y-6 bg-background rounded-lg p-6 shadow-xl border border-border">
             {/* Header with gradient background */}
-            <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6 rounded-lg -m-6 mb-6">
+            <div className="bg-gradient-to-r from-primary to-primary/90 text-white p-6 rounded-lg -m-6 mb-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold">
                     {message.planDetails?.destination?.toUpperCase() || 'DESTINATION'}
                   </h2>
-                  <p className="text-purple-100">Complete Travel Itinerary</p>
+                  <p className="text-white/80">Complete Travel Itinerary</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm text-purple-200">Trip Duration</div>
+                  <div className="text-sm text-white/80">Trip Duration</div>
                   <div className="text-xl font-bold">{message.planDetails?.days} Days</div>
                 </div>
               </div>
@@ -141,25 +141,25 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
 
             {/* Quick Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg text-center border border-blue-200 dark:border-blue-800">
-                <Calendar className="h-6 w-6 text-blue-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Duration</div>
-                <div className="text-lg font-bold text-blue-900 dark:text-blue-100">{message.planDetails?.days} Days</div>
+              <div className="bg-primary/5 p-4 rounded-lg text-center border border-primary/20">
+                <Calendar className="h-6 w-6 text-primary mx-auto mb-2" />
+                <div className="text-sm font-medium text-foreground">Duration</div>
+                <div className="text-lg font-bold text-primary">{message.planDetails?.days} Days</div>
               </div>
-              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg text-center border border-green-200 dark:border-green-800">
-                <Users className="h-6 w-6 text-green-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-green-700 dark:text-green-300">Travelers</div>
-                <div className="text-lg font-bold text-green-900 dark:text-green-100">{message.planDetails?.travelers}</div>
+              <div className="bg-primary/5 p-4 rounded-lg text-center border border-primary/20">
+                <Users className="h-6 w-6 text-primary mx-auto mb-2" />
+                <div className="text-sm font-medium text-foreground">Travelers</div>
+                <div className="text-lg font-bold text-primary">{message.planDetails?.travelers}</div>
               </div>
-              <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg text-center border border-purple-200 dark:border-purple-800">
-                <DollarSign className="h-6 w-6 text-purple-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Budget</div>
-                <div className="text-sm font-bold text-purple-900 dark:text-purple-100">{message.planDetails?.budget}</div>
+              <div className="bg-primary/5 p-4 rounded-lg text-center border border-primary/20">
+                <DollarSign className="h-6 w-6 text-primary mx-auto mb-2" />
+                <div className="text-sm font-medium text-foreground">Budget</div>
+                <div className="text-sm font-bold text-primary">{message.planDetails?.budget}</div>
               </div>
-              <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg text-center border border-orange-200 dark:border-orange-800">
-                <MapPin className="h-6 w-6 text-orange-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-orange-700 dark:text-orange-300">Focus</div>
-                <div className="text-sm font-bold text-orange-900 dark:text-orange-100">{message.planDetails?.interests}</div>
+              <div className="bg-primary/5 p-4 rounded-lg text-center border border-primary/20">
+                <MapPin className="h-6 w-6 text-primary mx-auto mb-2" />
+                <div className="text-sm font-medium text-foreground">Focus</div>
+                <div className="text-sm font-bold text-primary">{message.planDetails?.interests}</div>
               </div>
             </div>
 
@@ -168,8 +168,8 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
               <h3 className="text-xl font-bold mb-4 text-foreground">Day-by-Day Itinerary</h3>
               <div className="space-y-4">
                 {Array.from({ length: Number(message.planDetails?.days) || 3 }, (_, i) => (
-                  <div key={i} className="border-l-4 border-purple-500 pl-6 py-4 bg-muted/50 rounded-r-lg relative">
-                    <div className="absolute -left-3 top-4 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                  <div key={i} className="border-l-4 border-primary pl-6 py-4 bg-muted/50 rounded-r-lg relative">
+                    <div className="absolute -left-3 top-4 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
                       {i + 1}
                     </div>
                     <h4 className="font-bold text-lg mb-3 text-foreground">
@@ -177,7 +177,7 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
                     </h4>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3">
-                        <div className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded text-xs font-medium">
+                        <div className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
                           9:00 AM
                         </div>
                         <div>
@@ -186,7 +186,7 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-1 rounded text-xs font-medium">
+                        <div className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
                           11:00 AM
                         </div>
                         <div>
@@ -195,7 +195,7 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <div className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 px-2 py-1 rounded text-xs font-medium">
+                        <div className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
                           7:00 PM
                         </div>
                         <div>
@@ -213,25 +213,25 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
             <div className="mb-6">
               <h3 className="text-xl font-bold mb-4 text-foreground">Estimated Budget Breakdown</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="text-2xl mb-2">✈️</div>
-                  <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Flights</div>
-                  <div className="text-lg font-bold text-blue-900 dark:text-blue-100">$1,200</div>
+                  <div className="text-sm font-medium text-foreground">Flights</div>
+                  <div className="text-lg font-bold text-primary">$1,200</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="text-2xl mb-2">🏨</div>
-                  <div className="text-sm font-medium text-green-700 dark:text-green-300">Hotels</div>
-                  <div className="text-lg font-bold text-green-900 dark:text-green-100">$800</div>
+                  <div className="text-sm font-medium text-foreground">Hotels</div>
+                  <div className="text-lg font-bold text-primary">$800</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="text-2xl mb-2">🍽️</div>
-                  <div className="text-sm font-medium text-orange-700 dark:text-orange-300">Food</div>
-                  <div className="text-lg font-bold text-orange-900 dark:text-orange-100">$400</div>
+                  <div className="text-sm font-medium text-foreground">Food</div>
+                  <div className="text-lg font-bold text-primary">$400</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="text-2xl mb-2">🎯</div>
-                  <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Activities</div>
-                  <div className="text-lg font-bold text-purple-900 dark:text-purple-100">$300</div>
+                  <div className="text-sm font-medium text-foreground">Activities</div>
+                  <div className="text-lg font-bold text-primary">$300</div>
                 </div>
               </div>
             </div>
@@ -248,7 +248,7 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
                 />
                 <Button 
                   onClick={handleSubmitChanges}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6"
+                  className="bg-primary hover:bg-primary/90 text-white px-6"
                   disabled={!changeRequest.trim()}
                 >
                   Update Plan
@@ -257,22 +257,22 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 pt-4 border-t border-border/50">
-              <Button onClick={handleDownloadPdf} variant="outline" size="sm" className="flex-1 border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20">
+            <div className="flex gap-2 pt-4 border-t border-border">
+              <Button onClick={handleDownloadPdf} variant="outline" size="sm" className="flex-1 border-primary/20 hover:bg-primary/5">
                 <Download className="h-4 w-4 mr-2" />
                 Download PDF
               </Button>
-              <Button onClick={onUpdatePlan} variant="outline" size="sm" className="flex-1 border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20">
+              <Button onClick={onUpdatePlan} variant="outline" size="sm" className="flex-1 border-primary/20 hover:bg-primary/5">
                 <Repeat className="h-4 w-4 mr-2" />
                 Regenerate
               </Button>
             </div>
           </div>
         ) : message.isShoppingResponse ? (
-          <div className="space-y-6 bg-gradient-to-br from-background to-background/50 dark:from-gray-900 dark:to-gray-800 rounded-lg p-6 shadow-xl border border-border/50">
-            <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6 rounded-lg -m-6 mb-6">
+          <div className="space-y-6 bg-background rounded-lg p-6 shadow-xl border border-border">
+            <div className="bg-gradient-to-r from-primary to-primary/90 text-white p-6 rounded-lg -m-6 mb-6">
               <h2 className="text-2xl font-bold">PRODUCT RECOMMENDATIONS</h2>
-              <p className="text-purple-100">Curated just for you</p>
+              <p className="text-white/80">Curated just for you</p>
             </div>
             
             <div className="mb-4">
@@ -281,38 +281,38 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
 
             {/* Product Grid with Purple Theme */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div className="border border-purple-200 dark:border-purple-800 rounded-lg p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
-                <div className="h-32 bg-purple-100 dark:bg-purple-800/50 rounded-lg mb-3 flex items-center justify-center">
-                  <div className="text-4xl text-purple-600 dark:text-purple-300">🎧</div>
+              <div className="border border-primary/20 rounded-lg p-4 bg-primary/5">
+                <div className="h-32 bg-primary/10 rounded-lg mb-3 flex items-center justify-center">
+                  <div className="text-4xl text-primary">🎧</div>
                 </div>
                 <h4 className="font-semibold text-lg text-foreground">Premium Wireless Headphones</h4>
                 <p className="text-sm text-muted-foreground mb-3">Noise-cancelling over-ear headphones with 30-hour battery life</p>
                 <div className="flex justify-between items-center mb-3">
-                  <span className="font-bold text-xl text-purple-700 dark:text-purple-300">$199.99</span>
+                  <span className="font-bold text-xl text-primary">$199.99</span>
                   <div className="flex items-center gap-1">
-                    <span className="text-yellow-500">★★★★★</span>
+                    <span className="text-primary">★★★★★</span>
                     <span className="text-sm text-muted-foreground">4.8/5</span>
                   </div>
                 </div>
-                <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-white">
                   View Product
                 </Button>
               </div>
 
-              <div className="border border-purple-200 dark:border-purple-800 rounded-lg p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
-                <div className="h-32 bg-purple-100 dark:bg-purple-800/50 rounded-lg mb-3 flex items-center justify-center">
-                  <div className="text-4xl text-purple-600 dark:text-purple-300">⌚</div>
+              <div className="border border-primary/20 rounded-lg p-4 bg-primary/5">
+                <div className="h-32 bg-primary/10 rounded-lg mb-3 flex items-center justify-center">
+                  <div className="text-4xl text-primary">⌚</div>
                 </div>
                 <h4 className="font-semibold text-lg text-foreground">Smart Fitness Watch</h4>
                 <p className="text-sm text-muted-foreground mb-3">Track your workouts, heart rate, and sleep patterns</p>
                 <div className="flex justify-between items-center mb-3">
-                  <span className="font-bold text-xl text-purple-700 dark:text-purple-300">$249.50</span>
+                  <span className="font-bold text-xl text-primary">$249.50</span>
                   <div className="flex items-center gap-1">
-                    <span className="text-yellow-500">★★★★☆</span>
+                    <span className="text-primary">★★★★☆</span>
                     <span className="text-sm text-muted-foreground">4.6/5</span>
                   </div>
                 </div>
-                <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-white">
                   View Product
                 </Button>
               </div>
@@ -322,31 +322,31 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
             <div className="mb-6">
               <h3 className="text-lg font-bold mb-4 text-foreground">Why these recommendations?</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="text-2xl mb-2">🎯</div>
-                  <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Best Match</div>
+                  <div className="text-sm font-medium text-primary">Best Match</div>
                   <div className="text-xs text-muted-foreground">Based on your preferences</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="text-2xl mb-2">💰</div>
-                  <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Great Value</div>
+                  <div className="text-sm font-medium text-primary">Great Value</div>
                   <div className="text-xs text-muted-foreground">Within your budget</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="text-2xl mb-2">⭐</div>
-                  <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Top Rated</div>
+                  <div className="text-sm font-medium text-primary">Top Rated</div>
                   <div className="text-xs text-muted-foreground">Highly reviewed products</div>
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 pt-4 border-t border-border/50">
-              <Button onClick={handleRegenerateProducts} variant="outline" size="sm" className="flex-1 border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20">
+            <div className="flex gap-2 pt-4 border-t border-border">
+              <Button onClick={handleRegenerateProducts} variant="outline" size="sm" className="flex-1 border-primary/20 hover:bg-primary/5">
                 <RefreshCcw className="h-4 w-4 mr-2" />
                 Regenerate
               </Button>
-              <Button variant="outline" size="sm" className="flex-1 border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20">
+              <Button variant="outline" size="sm" className="flex-1 border-primary/20 hover:bg-primary/5">
                 <ThumbsUp className="h-4 w-4 mr-2" />
                 Like Results
               </Button>
