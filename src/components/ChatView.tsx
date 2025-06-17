@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Paperclip, Mic, ArrowRight, LucideIcon, Check, X } from 'lucide-react';
+import { Paperclip, Mic, ArrowRight, LucideIcon, Check, X, Sparkles } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { TravelPlannerForm, TravelPlanFormValues } from './TravelPlannerForm';
 import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
@@ -9,7 +9,7 @@ import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantFo
 const agentInfo = {
   'AI Chat': {
     title: 'AI Chat',
-    subtitle: 'Your AI Chat Companion',
+    subtitle: 'Your intelligent AI companion for any question or task.',
     suggestions: [
       'Draft an email to my team about the new project timeline.',
       'Give me 10 ideas for a blog post about sustainable living.',
@@ -18,7 +18,7 @@ const agentInfo = {
   },
   'Travel Planner': {
     title: 'Travel Planner',
-    subtitle: 'Let me help you plan your next adventure.',
+    subtitle: 'Let me help you plan your next adventure with detailed itineraries.',
     suggestions: [
       'Create a 5-day itinerary for a relaxing beach vacation in Bali.',
       'What are the must-see historical sites in Rome?',
@@ -27,7 +27,7 @@ const agentInfo = {
   },
   'Shopping Assistant': {
     title: 'Shopping Assistant',
-    subtitle: 'Your personal guide to smart shopping.',
+    subtitle: 'Your personal guide to smart shopping and product recommendations.',
     suggestions: [
       'What are the top-rated noise-cancelling headphones for under $200?',
       'Help me find a sustainable and ethical brand for everyday basics.',
@@ -36,7 +36,7 @@ const agentInfo = {
   },
   'Researcher': {
     title: 'Researcher',
-    subtitle: 'Get in-depth information on any topic.',
+    subtitle: 'Get in-depth information and analysis on any topic.',
     suggestions: [
       'Summarize the latest breakthroughs in renewable energy technology.',
       'Provide a detailed overview of the causes of the Great Depression.',
@@ -59,9 +59,10 @@ interface ChatViewProps {
   activeAgentName: string;
   activeAgentIcon: LucideIcon;
   selectedModel: string;
+  chatKey: number;
 }
 
-export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, selectedModel }: ChatViewProps) {
+export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, selectedModel, chatKey }: ChatViewProps) {
   const currentAgentInfo = agentInfo[activeAgentName] || agentInfo['AI Chat'];
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -77,7 +78,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
     setShowTravelForm(false);
     setShowShoppingForm(false);
     setInput('');
-  }, [activeAgentName]);
+  }, [activeAgentName, chatKey]);
 
   const handleStartEdit = (message: Message) => {
     setInput(message.text);
@@ -201,28 +202,29 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
   }, [messages]);
 
   return (
-    <div className="flex h-full flex-col">
-      <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6">
+    <div className="flex h-full flex-col bg-gradient-to-b from-background to-background/50">
+      <div ref={chatContainerRef} className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
-          <div className="flex justify-center">
-            <div className="w-full max-w-4xl mx-auto text-center animate-fade-in pt-16 md:pt-24">
-              <div className="inline-block p-4 bg-primary/10 rounded-full ring-8 ring-primary/5">
-                <ActiveAgentIcon className="h-12 w-12 text-primary" />
+          <div className="flex min-h-full items-center justify-center p-6">
+            <div className="w-full max-w-4xl mx-auto text-center animate-fade-in-up">
+              <div className="inline-block p-6 bg-gradient-to-br from-primary/20 to-primary/5 rounded-3xl ring-1 ring-primary/10 mb-8 animate-bounce-in">
+                <ActiveAgentIcon className="h-16 w-16 text-primary" />
               </div>
-              <h1 className="text-4xl font-bold tracking-tight lg:text-5xl mt-6">
+              <h1 className="text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent mb-4">
                 {currentAgentInfo.title}
               </h1>
-              <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
                 {currentAgentInfo.subtitle}
               </p>
-              <div className="mt-4 inline-flex items-center justify-center px-4 py-2 bg-muted rounded-full text-sm font-medium">
-                <span className="text-muted-foreground mr-2">Model:</span>
+              <div className="inline-flex items-center justify-center px-6 py-3 bg-muted/50 rounded-full text-sm font-medium border border-border/50 backdrop-blur-sm">
+                <Sparkles className="h-4 w-4 text-primary mr-2" />
+                <span className="text-muted-foreground mr-2">Powered by:</span>
                 <span className="font-semibold text-foreground">{selectedModel}</span>
               </div>
             </div>
           </div>
         ) : (
-          <div className="w-full max-w-4xl mx-auto">
+          <div className="w-full max-w-4xl mx-auto p-6">
             <div className="space-y-8">
               {messages.map((message) => (
                 <ChatMessage 
@@ -239,7 +241,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
         )}
       </div>
       
-      <div className="px-4 md:px-6 pb-8">
+      <div className="border-t border-border/50 bg-background/80 backdrop-blur-sm p-6">
         <div className="w-full max-w-4xl mx-auto">
           {activeAgentName === 'Travel Planner' && showTravelForm ? (
             <TravelPlannerForm onSubmit={handleTravelFormSubmit} initialValues={currentPlanDetails} />
@@ -248,51 +250,62 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
           ) : (
             <>
               {messages.length === 0 && (
-                 <div className="mb-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {currentAgentInfo.suggestions.map((s, i) => (
-                       <div key={i} onClick={(e) => handleSendMessage(e, s)} className="p-4 border rounded-lg hover:bg-accent/50 cursor-pointer transition-colors text-left text-sm text-muted-foreground animate-fade-in" style={{animationDelay: `${i * 100}ms`}}>
-                        {s}
+                <div className="mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {currentAgentInfo.suggestions.map((suggestion, i) => (
+                      <div 
+                        key={i} 
+                        onClick={(e) => handleSendMessage(e, suggestion)} 
+                        className="group p-4 border border-border/50 rounded-2xl hover:bg-accent/50 hover:border-primary/30 cursor-pointer transition-all duration-200 text-left text-sm text-muted-foreground animate-fade-in hover:shadow-lg hover:shadow-primary/5 backdrop-blur-sm" 
+                        style={{animationDelay: `${i * 100}ms`}}
+                      >
+                        <p className="group-hover:text-foreground transition-colors">{suggestion}</p>
                       </div>
                     ))}
                   </div>
-                   <p className="text-center text-xs text-muted-foreground mt-3">Suggestions for {currentAgentInfo.title}</p>
+                  <p className="text-center text-xs text-muted-foreground mt-4">
+                    Try these suggestions or ask anything to {currentAgentInfo.title}
+                  </p>
                 </div>
               )}
 
               <form onSubmit={handleSendMessage} className="relative">
                 {editingMessageId && (
-                  <div className="text-xs text-muted-foreground absolute -top-6 left-2">Editing message...</div>
+                  <div className="text-xs text-primary font-medium absolute -top-6 left-4 animate-fade-in">
+                    Editing message...
+                  </div>
                 )}
-                <Input 
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder={`Message ${currentAgentInfo.title}...`} 
-                  className="h-14 rounded-full bg-card/80 backdrop-blur-sm pl-6 pr-40 text-base" 
-                />
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                {editingMessageId ? (
-                    <>
-                      <Button type="submit" size="icon" className="rounded-full w-10 h-10 bg-primary/90 hover:bg-primary" disabled={!input.trim()}>
-                        <Check className="h-5 w-5" />
-                      </Button>
-                      <Button onClick={cancelEdit} variant="ghost" size="icon" type="button" className="rounded-full w-10 h-10">
-                        <X className="h-5 w-5 text-muted-foreground" />
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button variant="ghost" size="icon" type="button">
-                        <Paperclip className="h-5 w-5 text-muted-foreground" />
-                      </Button>
-                      <Button variant="ghost" size="icon" type="button">
-                        <Mic className="h-5 w-5 text-muted-foreground" />
-                      </Button>
-                      <Button type="submit" size="icon" className="rounded-full w-10 h-10 bg-primary/90 hover:bg-primary" disabled={!input.trim()}>
-                        <ArrowRight className="h-5 w-5" />
-                      </Button>
-                    </>
-                  )}
+                <div className="relative">
+                  <Input 
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder={`Message ${currentAgentInfo.title}...`} 
+                    className="h-16 rounded-2xl bg-background/80 backdrop-blur-sm border border-border/50 pl-6 pr-48 text-base shadow-lg focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all" 
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                    {editingMessageId ? (
+                      <>
+                        <Button type="submit" size="icon" className="rounded-full w-11 h-11 bg-primary hover:bg-primary/90 shadow-lg" disabled={!input.trim()}>
+                          <Check className="h-5 w-5" />
+                        </Button>
+                        <Button onClick={cancelEdit} variant="ghost" size="icon" type="button" className="rounded-full w-11 h-11 hover:bg-muted">
+                          <X className="h-5 w-5 text-muted-foreground" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button variant="ghost" size="icon" type="button" className="rounded-full w-11 h-11 hover:bg-muted">
+                          <Paperclip className="h-5 w-5 text-muted-foreground" />
+                        </Button>
+                        <Button variant="ghost" size="icon" type="button" className="rounded-full w-11 h-11 hover:bg-muted">
+                          <Mic className="h-5 w-5 text-muted-foreground" />
+                        </Button>
+                        <Button type="submit" size="icon" className="rounded-full w-11 h-11 bg-primary hover:bg-primary/90 shadow-lg transition-all duration-200" disabled={!input.trim()}>
+                          <ArrowRight className="h-5 w-5" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </form>
             </>
