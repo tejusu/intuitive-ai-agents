@@ -1,102 +1,128 @@
 
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Bot, Plane, ShoppingBag, BrainCircuit, Plus, MessageSquare } from 'lucide-react';
 import {
-  ChevronsLeft,
-  Plus,
-  MessageSquare,
-  Compass,
-  ShoppingCart,
-  FlaskConical,
-  MoreHorizontal,
-  Bot,
-  Plane,
-  ShoppingBag,
-  BrainCircuit,
-} from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import { Agent } from './Layout';
+import { useTheme } from './ThemeProvider';
 
 interface AppSidebarProps {
-  agents: Array<{
-    name: string;
-    icon: any;
-    active: boolean;
-    chatHistory: any[];
-  }>;
-  onAgentChange: (agentName: string) => void;
+  agents: Agent[];
+  onAgentChange: (name: string) => void;
   onNewChat: () => void;
 }
 
+const agentIcons = {
+  'AI Chat': Bot,
+  'Travel Planner': Plane,
+  'Shopping Assistant': ShoppingBag,
+  'Researcher': BrainCircuit,
+};
+
 const recentChats = [
-    { text: 'How can I increase the number ...', icon: MessageSquare },
-    { text: "What's the best approach to ...", icon: MessageSquare },
-    { text: 'Plan a trip to Italy', icon: Plane },
-    { text: 'Find deals on electronics', icon: ShoppingBag },
+  { text: 'How to optimize React performance?', agent: 'AI Chat' },
+  { text: 'Plan a trip to Tokyo', agent: 'Travel Planner' },
+  { text: 'Best budget laptops under $800', agent: 'Shopping Assistant' },
+  { text: 'Latest AI research papers', agent: 'Researcher' },
+  { text: 'JavaScript async/await explained', agent: 'AI Chat' },
+  { text: 'Weekend getaway in Europe', agent: 'Travel Planner' },
+  { text: 'Compare smartphones 2024', agent: 'Shopping Assistant' },
+  { text: 'Climate change research', agent: 'Researcher' },
 ];
 
 export function AppSidebar({ agents, onAgentChange, onNewChat }: AppSidebarProps) {
+  const { theme } = useTheme();
+  const activeAgent = agents.find(agent => agent.active);
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
   return (
-    <TooltipProvider delayDuration={0}>
-      <div className="relative flex h-screen flex-col bg-sidebar text-sidebar-foreground border-r transition-all duration-300 ease-in-out w-80 p-4">
-        <div className="flex items-center justify-start">
-          <img 
-            src="/lovable-uploads/84da8da3-13f9-4250-8f63-2347b6c4b44b.png" 
-            alt="PilottAi Logo" 
-            className="h-10 w-10" 
-          />
+    <Sidebar className="border-r border-sidebar-border bg-sidebar">
+      <SidebarHeader className="p-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+            <img 
+              src="/lovable-uploads/6ab808f8-ceb1-45d8-9f3a-cd60fbd0e429.png" 
+              alt="PilottAI" 
+              className={`h-8 w-8 object-contain ${isDark ? 'logo-filter-dark' : 'logo-filter-light'}`}
+            />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-sidebar-foreground">PilottAI</h1>
+            <p className="text-xs text-sidebar-foreground/60">Your AI Assistant</p>
+          </div>
         </div>
-
-        <div className="mt-8">
-          <Button 
-            className="w-full justify-start text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground" 
-            size="lg"
-            onClick={onNewChat}
-          >
-            <Plus className="h-5 w-5" />
-            New Chat
-          </Button>
-        </div>
-
-        <nav className="mt-8">
-          <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">AI Agents</h3>
-          <ul className="space-y-1">
-            {agents.map(agent => (
-              <li key={agent.name}>
-                <button
-                  onClick={() => onAgentChange(agent.name)}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium w-full text-left transition-colors",
-                    agent.active 
-                      ? "bg-primary text-primary-foreground" 
-                      : "hover:bg-accent hover:text-accent-foreground"
-                  )}
-                >
-                  <agent.icon className="h-5 w-5" />
-                  <span>{agent.name}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
         
-        <div className="mt-8">
-          <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Recent Chats</h3>
-          <ul className="space-y-1">
-            {recentChats.map((chat, index) => (
-              <li key={index}>
-                <a href="#" className="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-                  <div className="flex items-center gap-3 truncate">
-                    <chat.icon className="h-5 w-5" />
-                    <span className="truncate">{chat.text}</span>
-                  </div>
-                  <MoreHorizontal className="h-5 w-5 text-muted-foreground" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </TooltipProvider>
+        <Button 
+          onClick={onNewChat}
+          className="mt-4 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-xl h-12 text-sm"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          New Chat
+        </Button>
+      </SidebarHeader>
+
+      <SidebarContent className="px-4 flex-1 overflow-hidden">
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider mb-2">
+            AI Agents
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {agents.map((agent) => {
+                const IconComponent = agentIcons[agent.name] || Bot;
+                return (
+                  <SidebarMenuItem key={agent.name}>
+                    <SidebarMenuButton
+                      onClick={() => onAgentChange(agent.name)}
+                      isActive={agent.active}
+                      className={`w-full justify-start h-12 rounded-xl transition-all duration-200 ${
+                        agent.active 
+                          ? 'bg-primary text-primary-foreground shadow-lg hover:bg-primary/90' 
+                          : 'hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground'
+                      }`}
+                    >
+                      <IconComponent className="h-5 w-5" />
+                      <span className="font-medium">{agent.name}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-6 flex-1 min-h-0">
+          <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider mb-2">
+            Recent Chats
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="flex-1 min-h-0">
+            <div className="overflow-y-auto max-h-full sidebar-scroll">
+              <SidebarMenu className="space-y-1">
+                {recentChats.map((chat, index) => (
+                  <SidebarMenuItem key={index}>
+                    <SidebarMenuButton className="w-full justify-start h-auto py-3 px-3 rounded-lg hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground">
+                      <MessageSquare className="h-4 w-4 shrink-0 text-sidebar-foreground/60" />
+                      <div className="flex flex-col items-start gap-1 min-w-0">
+                        <span className="text-sm truncate w-full">{chat.text}</span>
+                        <span className="text-xs text-sidebar-foreground/50">{chat.agent}</span>
+                      </div>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </div>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }
