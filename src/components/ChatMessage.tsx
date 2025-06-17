@@ -269,57 +269,86 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
             </div>
           </div>
         ) : message.isShoppingResponse ? (
-          <div className="space-y-6 bg-white rounded-lg p-6 shadow-lg">
-            <div className="bg-blue-500 text-white p-4 rounded-t-lg -m-6 mb-6">
-              <h2 className="text-lg font-bold">Here are some product recommendations for you!</h2>
+          <div className="space-y-6 bg-gradient-to-br from-background to-background/50 dark:from-gray-900 dark:to-gray-800 rounded-lg p-6 shadow-xl border border-border/50">
+            <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6 rounded-lg -m-6 mb-6">
+              <h2 className="text-2xl font-bold">PRODUCT RECOMMENDATIONS</h2>
+              <p className="text-purple-100">Curated just for you</p>
             </div>
             
             <div className="mb-4">
-              <h3 className="text-md font-semibold mb-3">Here are some suggestions for "{message.shoppingQuery}"</h3>
+              <h3 className="text-lg font-semibold mb-3 text-foreground">Here are some suggestions for "{message.shoppingQuery}"</h3>
             </div>
 
-            {/* Product Grid */}
+            {/* Product Grid with Purple Theme */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div className="border rounded-lg p-4">
-                <div className="h-32 bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                  <div className="text-gray-400">📱</div>
+              <div className="border border-purple-200 dark:border-purple-800 rounded-lg p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+                <div className="h-32 bg-purple-100 dark:bg-purple-800/50 rounded-lg mb-3 flex items-center justify-center">
+                  <div className="text-4xl text-purple-600 dark:text-purple-300">🎧</div>
                 </div>
-                <h4 className="font-semibold text-sm">Premium Wireless Headphones</h4>
-                <p className="text-xs text-gray-600 mb-2">Noise-cancelling over-ear headphones with 30-hour battery life</p>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">$199.99</span>
-                  <span className="text-xs text-gray-500">Rating: 4.8/5</span>
+                <h4 className="font-semibold text-lg text-foreground">Premium Wireless Headphones</h4>
+                <p className="text-sm text-muted-foreground mb-3">Noise-cancelling over-ear headphones with 30-hour battery life</p>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-bold text-xl text-purple-700 dark:text-purple-300">$199.99</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-yellow-500">★★★★★</span>
+                    <span className="text-sm text-muted-foreground">4.8/5</span>
+                  </div>
                 </div>
-                <Button size="sm" variant="outline" className="w-full mt-2">
+                <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                   View Product
                 </Button>
               </div>
 
-              <div className="border rounded-lg p-4">
-                <div className="h-32 bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                  <div className="text-gray-400">⌚</div>
+              <div className="border border-purple-200 dark:border-purple-800 rounded-lg p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+                <div className="h-32 bg-purple-100 dark:bg-purple-800/50 rounded-lg mb-3 flex items-center justify-center">
+                  <div className="text-4xl text-purple-600 dark:text-purple-300">⌚</div>
                 </div>
-                <h4 className="font-semibold text-sm">Smart Fitness Watch</h4>
-                <p className="text-xs text-gray-600 mb-2">Track your workouts, heart rate, and sleep patterns</p>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">$249.50</span>
-                  <span className="text-xs text-gray-500">Rating: 4.6/5</span>
+                <h4 className="font-semibold text-lg text-foreground">Smart Fitness Watch</h4>
+                <p className="text-sm text-muted-foreground mb-3">Track your workouts, heart rate, and sleep patterns</p>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-bold text-xl text-purple-700 dark:text-purple-300">$249.50</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-yellow-500">★★★★☆</span>
+                    <span className="text-sm text-muted-foreground">4.6/5</span>
+                  </div>
                 </div>
-                <Button size="sm" variant="outline" className="w-full mt-2">
+                <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                   View Product
                 </Button>
+              </div>
+            </div>
+
+            {/* Enhanced Features Section */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold mb-4 text-foreground">Why these recommendations?</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                  <div className="text-2xl mb-2">🎯</div>
+                  <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Best Match</div>
+                  <div className="text-xs text-muted-foreground">Based on your preferences</div>
+                </div>
+                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                  <div className="text-2xl mb-2">💰</div>
+                  <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Great Value</div>
+                  <div className="text-xs text-muted-foreground">Within your budget</div>
+                </div>
+                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                  <div className="text-2xl mb-2">⭐</div>
+                  <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Top Rated</div>
+                  <div className="text-xs text-muted-foreground">Highly reviewed products</div>
+                </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 pt-4 border-t">
-              <Button onClick={handleRegenerateProducts} variant="outline" size="sm" className="flex-1">
+            <div className="flex gap-2 pt-4 border-t border-border/50">
+              <Button onClick={handleRegenerateProducts} variant="outline" size="sm" className="flex-1 border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20">
                 <RefreshCcw className="h-4 w-4 mr-2" />
                 Regenerate
               </Button>
-              <Button variant="outline" size="sm" className="flex-1">
+              <Button variant="outline" size="sm" className="flex-1 border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-900/20">
                 <ThumbsUp className="h-4 w-4 mr-2" />
-                Like
+                Like Results
               </Button>
             </div>
           </div>
