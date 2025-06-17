@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -219,6 +218,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveAgentIcon, se
               </p>
               <div className="inline-flex items-center justify-center px-6 py-3 bg-muted/50 rounded-full text-sm font-medium border border-border/50 backdrop-blur-sm">
                 <Sparkles className="h-4 w-4 text-primary mr-2" />
+                <span className="text-muted-foreground mr-2">Powered by:</span>
                 <span className="font-semibold text-foreground">{selectedModel}</span>
               </div>
             </div>
