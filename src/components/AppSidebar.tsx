@@ -41,7 +41,7 @@ export function AppSidebar({ agents, onAgentChange, onNewChat }: AppSidebarProps
       <div className="relative flex h-screen flex-col bg-sidebar text-sidebar-foreground border-r transition-all duration-300 ease-in-out w-80 p-4">
         <div className="flex items-center justify-start">
           <img 
-            src="/lovable-uploads/bb9f2326-b244-4452-adf5-e760c863e9a8.png" 
+            src="/lovable-uploads/84da8da3-13f9-4250-8f63-2347b6c4b44b.png" 
             alt="PilottAi Logo" 
             className="h-10 w-10" 
           />
