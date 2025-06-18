@@ -28,7 +28,7 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
   const activeAgent = agents.find(agent => agent.active);
 
   return (
-    <header className="flex h-16 items-center justify-between px-6 border-b border-border/50 bg-background dark:bg-black backdrop-blur-sm">
+    <header className="flex h-16 items-center justify-between px-6 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="h-8 w-8" />
         
@@ -39,8 +39,8 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
                 <activeAgent.icon className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h2 className="text-sm font-semibold text-foreground dark:text-white">{activeAgent.name}</h2>
-                <p className="text-xs text-muted-foreground dark:text-gray-400">Active Agent</p>
+                <h2 className="text-sm font-semibold text-foreground">{activeAgent.name}</h2>
+                <p className="text-xs text-muted-foreground">Active Agent</p>
               </div>
             </>
           )}
@@ -103,7 +103,7 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/support')}>
               <HelpCircle className="mr-2 h-4 w-4" />
               <span>Support</span>
             </DropdownMenuItem>
