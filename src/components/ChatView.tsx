@@ -1,10 +1,11 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, Bot, Plane, ShoppingBag, BrainCircuit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ChatMessage } from './ChatMessage';
-import { TravelPlannerForm } from './TravelPlannerForm';
-import { ShoppingAssistantForm } from './ShoppingAssistantForm';
+import { TravelPlannerForm, TravelPlanFormValues } from './TravelPlannerForm';
+import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
 
 interface ChatViewProps {
   activeAgentName: string;
@@ -95,6 +96,16 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
     }, 1000 + Math.random() * 2000);
   };
 
+  const handleTravelFormSubmit = (values: TravelPlanFormValues) => {
+    const message = `Plan a ${values.days}-day trip to ${values.destination} for ${values.travelers} travelers with a ${values.budget} budget. Interests: ${values.interests}. Travel style: ${values.style}.`;
+    handleSendMessage(message);
+  };
+
+  const handleShoppingFormSubmit = (values: ShoppingFormValues) => {
+    const message = `Help me find: ${values.query} in the ${values.category} category with a budget of ${values.budget}. Additional preferences: ${values.preferences}`;
+    handleSendMessage(message);
+  };
+
   const getAIResponse = (userMessage: string, agentName: string): string => {
     const responses = {
       'AI Chat': [
@@ -138,10 +149,10 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
 
   const renderAgentForm = () => {
     if (activeAgentName === 'Travel Planner') {
-      return <TravelPlannerForm onSubmit={handleSendMessage} />;
+      return <TravelPlannerForm onSubmit={handleTravelFormSubmit} />;
     }
     if (activeAgentName === 'Shopping Assistant') {
-      return <ShoppingAssistantForm onSubmit={handleSendMessage} />;
+      return <ShoppingAssistantForm onSubmit={handleShoppingFormSubmit} />;
     }
     return null;
   };
@@ -161,7 +172,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
                 Welcome to {activeAgentName}
               </h2>
               <p className="text-muted-foreground">
-                Model: {selectedModel}
+                {selectedModel}
               </p>
             </div>
           </div>
@@ -242,7 +253,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
       <div className="p-6 border-t border-border/50 bg-background/80 backdrop-blur-sm">
         <div className="flex items-center justify-between max-w-4xl mx-auto">
           <div className="text-xs text-muted-foreground">
-            Model: {selectedModel}
+            {selectedModel}
           </div>
           <div className="flex gap-3">
             <Input
