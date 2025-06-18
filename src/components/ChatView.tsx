@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, Bot, Plane, ShoppingBag, BrainCircuit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -229,22 +228,42 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {messages.map((message) => (
-            <ChatMessage
-              key={message.id}
-              message={message.content}
-              isUser={message.isUser}
-              timestamp={message.timestamp}
-              agentName={message.agentName}
-            />
+            <div key={message.id} className="flex items-start gap-4">
+              {!message.isUser && (
+                <div className="p-2 bg-primary/10 rounded-full">
+                  <ActiveIcon className="h-6 w-6 text-primary" />
+                </div>
+              )}
+              <div className={`flex-1 ${message.isUser ? 'text-right' : ''}`}>
+                <div className={`inline-block p-4 rounded-2xl max-w-md ${
+                  message.isUser 
+                    ? 'bg-primary text-primary-foreground rounded-br-none ml-auto' 
+                    : 'bg-muted rounded-bl-none'
+                }`}>
+                  <p className="whitespace-pre-wrap">{message.content}</p>
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {message.timestamp.toLocaleTimeString()}
+                </div>
+              </div>
+              {message.isUser && (
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-medium">
+                  U
+                </div>
+              )}
+            </div>
           ))}
           {isLoading && (
-            <ChatMessage
-              message="Thinking..."
-              isUser={false}
-              timestamp={new Date()}
-              agentName={activeAgentName}
-              isLoading={true}
-            />
+            <div className="flex items-start gap-4">
+              <div className="p-2 bg-primary/10 rounded-full">
+                <ActiveIcon className="h-6 w-6 text-primary" />
+              </div>
+              <div className="flex-1">
+                <div className="inline-block p-4 rounded-2xl rounded-bl-none bg-muted">
+                  <p>Thinking...</p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
         <div ref={messagesEndRef} />
