@@ -1,10 +1,12 @@
+
 import { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Bot, Plane, ShoppingBag, BrainCircuit } from 'lucide-react';
+import { Send, Sparkles, Bot, Plane, ShoppingBag, BrainCircuit, Copy, ThumbsUp, ThumbsDown, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ChatMessage } from './ChatMessage';
-import { TravelPlannerForm } from './TravelPlannerForm';
-import { ShoppingAssistantForm } from './ShoppingAssistantForm';
+import { TravelPlannerForm, TravelPlanFormValues } from './TravelPlannerForm';
+import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
+import { toast } from 'sonner';
 
 interface ChatViewProps {
   activeAgentName: string;
@@ -19,6 +21,10 @@ interface Message {
   isUser: boolean;
   timestamp: Date;
   agentName?: string;
+  isTravelPlan?: boolean;
+  isShoppingResponse?: boolean;
+  planDetails?: TravelPlanFormValues;
+  shoppingQuery?: string;
 }
 
 const agentPrompts = {
@@ -52,6 +58,8 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showTravelForm, setShowTravelForm] = useState(false);
+  const [showShoppingForm, setShowShoppingForm] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -64,11 +72,82 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
 
   useEffect(() => {
     setMessages([]);
+    setShowTravelForm(false);
+    setShowShoppingForm(false);
   }, [chatKey]);
+
+  const handleTravelFormSubmit = (values: TravelPlanFormValues) => {
+    const formMessage = `I want to plan a ${values.days}-day trip to ${values.destination} for ${values.travelers} traveler(s) with a ${values.budget} budget, focusing on ${values.interests}.`;
+    
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: formMessage,
+      isUser: true,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setShowTravelForm(false);
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "I've created a detailed travel plan for you!",
+        isUser: false,
+        timestamp: new Date(),
+        agentName: activeAgentName,
+        isTravelPlan: true,
+        planDetails: values
+      };
+      setMessages(prev => [...prev, aiResponse]);
+      setIsLoading(false);
+    }, 2000);
+  };
+
+  const handleShoppingFormSubmit = (values: ShoppingFormValues) => {
+    const formMessage = `I'm looking for ${values.query} in the ${values.category} category with a budget of ${values.budget}. ${values.preferences ? `Additional preferences: ${values.preferences}` : ''}`;
+    
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: formMessage,
+      isUser: true,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setShowShoppingForm(false);
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "Here are my product recommendations for you!",
+        isUser: false,
+        timestamp: new Date(),
+        agentName: activeAgentName,
+        isShoppingResponse: true,
+        shoppingQuery: values.query
+      };
+      setMessages(prev => [...prev, aiResponse]);
+      setIsLoading(false);
+    }, 2000);
+  };
 
   const handleSendMessage = async (message?: string) => {
     const messageToSend = message || inputValue.trim();
     if (!messageToSend) return;
+
+    // Check if we should show forms
+    if (activeAgentName === 'Travel Planner' && messages.length === 0) {
+      setShowTravelForm(true);
+      return;
+    }
+    
+    if (activeAgentName === 'Shopping Assistant' && messages.length === 0) {
+      setShowShoppingForm(true);
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -127,6 +206,23 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
     return agentResponses[Math.floor(Math.random() * agentResponses.length)];
   };
 
+  const handleCopy = (content: string) => {
+    navigator.clipboard.writeText(content);
+    toast.success('Message copied to clipboard!');
+  };
+
+  const handleLike = () => {
+    toast.success('Feedback recorded!');
+  };
+
+  const handleDislike = () => {
+    toast.success('Feedback recorded!');
+  };
+
+  const handleRegenerate = () => {
+    toast.success('Regenerating response...');
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -136,15 +232,25 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
 
   const prompts = agentPrompts[activeAgentName] || agentPrompts['AI Chat'];
 
-  const renderAgentForm = () => {
-    if (activeAgentName === 'Travel Planner') {
-      return <TravelPlannerForm onSubmit={handleSendMessage} />;
-    }
-    if (activeAgentName === 'Shopping Assistant') {
-      return <ShoppingAssistantForm onSubmit={handleSendMessage} />;
-    }
-    return null;
-  };
+  if (showTravelForm) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex-1 flex flex-col items-center justify-center p-8">
+          <TravelPlannerForm onSubmit={handleTravelFormSubmit} />
+        </div>
+      </div>
+    );
+  }
+
+  if (showShoppingForm) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex-1 flex flex-col items-center justify-center p-8">
+          <ShoppingAssistantForm onSubmit={handleShoppingFormSubmit} />
+        </div>
+      </div>
+    );
+  }
 
   if (messages.length === 0) {
     return (
@@ -161,12 +267,10 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
                 Welcome to {activeAgentName}
               </h2>
               <p className="text-muted-foreground">
-                Model: {selectedModel}
+                {selectedModel}
               </p>
             </div>
           </div>
-
-          {renderAgentForm()}
 
           <div className="w-full max-w-4xl space-y-4">
             <h3 className="text-lg font-semibold text-center text-foreground">
@@ -218,21 +322,71 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {messages.map((message) => (
-            <ChatMessage
-              key={message.id}
-              message={message.content}
-              isUser={message.isUser}
-              timestamp={message.timestamp}
-              agentName={message.agentName}
-            />
+            <div key={message.id} className="space-y-4">
+              <ChatMessage
+                message={{
+                  id: parseInt(message.id),
+                  text: message.content,
+                  sender: message.isUser ? 'user' : 'ai',
+                  isTravelPlan: message.isTravelPlan,
+                  planDetails: message.planDetails,
+                  isShoppingResponse: message.isShoppingResponse,
+                  shoppingQuery: message.shoppingQuery
+                }}
+                agentIcon={<ActiveIcon className="h-4 w-4 text-primary" />}
+                onStartEdit={() => {}}
+                onUpdatePlan={() => {}}
+                onRegenerateShoppingResults={() => {}}
+              />
+              {!message.isUser && !message.isTravelPlan && !message.isShoppingResponse && (
+                <div className="flex items-center gap-2 justify-end max-w-4xl mx-auto">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => handleCopy(message.content)}
+                    className="text-muted-foreground hover:text-primary"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleLike}
+                    className="text-muted-foreground hover:text-primary"
+                  >
+                    <ThumbsUp className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleDislike}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <ThumbsDown className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleRegenerate}
+                    className="text-muted-foreground hover:text-primary"
+                  >
+                    <RefreshCcw className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+            </div>
           ))}
           {isLoading && (
             <ChatMessage
-              message="Thinking..."
-              isUser={false}
-              timestamp={new Date()}
-              agentName={activeAgentName}
-              isLoading={true}
+              message={{
+                id: Date.now(),
+                text: "Thinking...",
+                sender: 'ai'
+              }}
+              agentIcon={<ActiveIcon className="h-4 w-4 text-primary" />}
+              onStartEdit={() => {}}
+              onUpdatePlan={() => {}}
+              onRegenerateShoppingResults={() => {}}
             />
           )}
         </div>
@@ -242,7 +396,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
       <div className="p-6 border-t border-border/50 bg-background/80 backdrop-blur-sm">
         <div className="flex items-center justify-between max-w-4xl mx-auto">
           <div className="text-xs text-muted-foreground">
-            Model: {selectedModel}
+            {selectedModel}
           </div>
           <div className="flex gap-3">
             <Input

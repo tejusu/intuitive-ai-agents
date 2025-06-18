@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronDown, Settings, LogOut, Sparkles, User, CreditCard, HelpCircle, Moon, Sun } from 'lucide-react';
+import { ChevronDown, Settings, LogOut, Sparkles, User, CreditCard, HelpCircle } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +13,7 @@ import {
 import { Agent } from './Layout';
 import { ThemeToggle } from './ThemeToggle';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   agents: Agent[];
@@ -22,11 +23,12 @@ interface HeaderProps {
 }
 
 export function Header({ agents, onAgentChange, selectedModel, setSelectedModel }: HeaderProps) {
+  const navigate = useNavigate();
   const models = ['ChatGPT 4.1', 'O3-2025', 'O4-mini', 'GPT-4o'];
   const activeAgent = agents.find(agent => agent.active);
 
   return (
-    <header className="flex h-16 items-center justify-between px-6 border-b border-border/50 bg-black dark:bg-black backdrop-blur-sm">
+    <header className="flex h-16 items-center justify-between px-6 border-b border-border/50 bg-background dark:bg-black backdrop-blur-sm">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="h-8 w-8" />
         
@@ -37,8 +39,8 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
                 <activeAgent.icon className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h2 className="text-sm font-semibold text-white">{activeAgent.name}</h2>
-                <p className="text-xs text-gray-400">Active Agent</p>
+                <h2 className="text-sm font-semibold text-foreground dark:text-white">{activeAgent.name}</h2>
+                <p className="text-xs text-muted-foreground dark:text-gray-400">Active Agent</p>
               </div>
             </>
           )}
@@ -89,7 +91,7 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/profile')}>
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
@@ -97,7 +99,7 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
               <CreditCard className="mr-2 h-4 w-4" />
               <span>Billing</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/settings')}>
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </DropdownMenuItem>

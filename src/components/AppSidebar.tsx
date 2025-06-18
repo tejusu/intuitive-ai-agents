@@ -1,4 +1,3 @@
-
 import { Bot, Plane, ShoppingBag, BrainCircuit, Plus, MessageSquare, Sparkles } from 'lucide-react';
 import {
   Sidebar,
@@ -124,17 +123,7 @@ export function AppSidebar({ agents, onAgentChange, onNewChat }: AppSidebarProps
       </SidebarContent>
 
       <SidebarFooter className="p-4">
-        <div className="rounded-xl bg-gradient-to-r from-primary/20 to-primary/10 p-4 border border-primary/20">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <span className="text-sm font-semibold text-primary">U</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground">User</p>
-              <p className="text-xs text-sidebar-foreground/60 truncate">user@example.com</p>
-            </div>
-          </div>
-        </div>
+        {/* User box removed */}
       </SidebarFooter>
     </Sidebar>
   );

@@ -91,169 +91,115 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
             {/* Header with purple background */}
             <div className="bg-purple-500 text-white p-4 rounded-t-lg -m-6 mb-6">
               <h2 className="text-xl font-bold text-center">
-                COMPLETE TRAVEL PLAN FOR {message.planDetails?.destination?.toUpperCase() || 'DESTINATION'}
+                {message.planDetails?.destination?.toUpperCase() || 'DESTINATION'}
               </h2>
+              <p className="text-center text-purple-100">Complete Travel Itinerary</p>
             </div>
 
-            {/* Cover Image and Map Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              {/* Cover Image */}
-              <div className="relative h-48 rounded-lg overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=200&fit=crop" 
-                  alt="Travel destination" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-0 left-0 p-4 text-white bg-gradient-to-t from-black/60 to-transparent w-full">
-                  <h3 className="text-lg font-bold">
-                    {message.planDetails?.destination || 'Destination'}
-                  </h3>
-                  <p className="text-sm opacity-90">
-                    {message.planDetails?.days}-Day Adventure
-                  </p>
-                </div>
+            {/* Trip Info Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="text-center p-3 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="text-purple-600 text-sm font-medium">Trip Duration</div>
+                <div className="text-lg font-bold text-purple-800">{message.planDetails?.days} Days</div>
               </div>
-              
-              {/* Map Section */}
-              <div className="relative h-48 rounded-lg overflow-hidden bg-slate-100 border">
-                <iframe
-                  src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(message.planDetails?.destination || 'India')}`}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="rounded-lg"
-                />
-                <div className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-md">
-                  <MapPin className="h-4 w-4 text-purple-500" />
-                </div>
+              <div className="text-center p-3 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="text-purple-600 text-sm font-medium">Travelers</div>
+                <div className="text-lg font-bold text-purple-800">{message.planDetails?.travelers}</div>
               </div>
-            </div>
-
-            {/* Destination Overview */}
-            <div className="mb-6">
-              <h3 className="text-lg font-bold mb-3">Destination Overview</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                {message.planDetails?.destination || 'This destination'} is a vibrant location offering a perfect blend of culture, adventure, and relaxation. This {message.planDetails?.days}-day itinerary is specially crafted for {message.planDetails?.travelers} traveler(s) with a focus on {message.planDetails?.interests}.
-              </p>
-            </div>
-
-            {/* Quick Info Cards */}
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
-                <div className="text-blue-600 text-sm font-medium">Travel Dates</div>
-                <div className="text-xs text-gray-600">July 10-17, 2025</div>
-              </div>
-              <div className="text-center p-3 bg-green-50 rounded-lg">
-                <div className="text-green-600 text-sm font-medium">Travelers</div>
-                <div className="text-xs text-gray-600">{message.planDetails?.travelers} person(s)</div>
-              </div>
-              <div className="text-center p-3 bg-purple-50 rounded-lg">
+              <div className="text-center p-3 bg-purple-50 rounded-lg border border-purple-200">
                 <div className="text-purple-600 text-sm font-medium">Budget</div>
-                <div className="text-xs text-gray-600">{message.planDetails?.budget}</div>
+                <div className="text-lg font-bold text-purple-800">{message.planDetails?.budget}</div>
               </div>
-            </div>
-
-            {/* Travel Logistics */}
-            <div className="mb-6">
-              <h3 className="text-lg font-bold mb-3">Travel Logistics</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                  <div className="text-blue-600 mt-1">✈️</div>
-                  <div>
-                    <div className="font-medium text-sm">Flights</div>
-                    <div className="text-xs text-gray-600">Book round-trip with IndiGo for ₹12,500 via Skyscanner. Direct flights with 7kg cabin baggage included.</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
-                  <div className="text-purple-600 mt-1">🏨</div>
-                  <div>
-                    <div className="font-medium text-sm">Accommodation</div>
-                    <div className="text-xs text-gray-600">Stay at premium hotel, centrally located with modern amenities, rooftop pool and spa. ₹3,500/night via MakeMyTrip.</div>
-                  </div>
-                </div>
+              <div className="text-center p-3 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="text-purple-600 text-sm font-medium">Focus</div>
+                <div className="text-lg font-bold text-purple-800">{message.planDetails?.interests}</div>
               </div>
             </div>
 
             {/* Day-by-Day Itinerary */}
             <div className="mb-6">
-              <h3 className="text-lg font-bold mb-3">Day-by-Day Itinerary</h3>
+              <h3 className="text-lg font-bold mb-4 text-purple-800">Day-by-Day Itinerary</h3>
               <div className="space-y-4">
                 {Array.from({ length: Number(message.planDetails?.days) || 3 }, (_, i) => (
-                  <div key={i} className="border-l-4 border-blue-500 pl-4 py-3 bg-gray-50 rounded-r-lg">
-                    <h4 className="font-semibold text-sm mb-2">Day {i + 1}: {i === 0 ? 'Arrival & Exploration' : i === Number(message.planDetails?.days) - 1 ? 'Departure' : 'Adventure & Culture'}</h4>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-xs">
-                        <span className="font-medium">⭐ 9:00 AM</span>
-                        <span className="text-gray-600">Breakfast at local cafe</span>
+                  <div key={i} className="border border-purple-200 rounded-lg overflow-hidden">
+                    <div className="bg-purple-100 p-4 border-b border-purple-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">
+                          {i + 1}
+                        </div>
+                        <h4 className="font-semibold text-purple-800">
+                          Day {i + 1}: {i === 0 ? 'Arrival & First Impressions' : i === Number(message.planDetails?.days) - 1 ? 'Final Day & Departure' : 'Exploration & Adventure'}
+                        </h4>
                       </div>
-                      <div className="text-xs text-blue-600 ml-4">📍 Popular location, {message.planDetails?.destination}</div>
-                      <div className="flex items-center gap-2 text-xs">
-                        <span className="font-medium">⭐ 2:00 PM</span>
-                        <span className="text-gray-600">Main attraction visit</span>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div className="flex items-start gap-3">
+                        <span className="text-sm font-medium text-purple-600">9:00 AM</span>
+                        <div>
+                          <div className="font-medium text-sm">Local Breakfast Experience</div>
+                          <div className="text-xs text-gray-600">Start your day with authentic local cuisine</div>
+                        </div>
                       </div>
-                      <div className="text-xs text-blue-600 ml-4">📍 Tourist hotspot, {message.planDetails?.destination}</div>
+                      <div className="flex items-start gap-3">
+                        <span className="text-sm font-medium text-purple-600">11:00 AM</span>
+                        <div>
+                          <div className="font-medium text-sm">Main Attraction Visit</div>
+                          <div className="text-xs text-gray-600">Explore the most iconic landmarks</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="text-sm font-medium text-purple-600">7:00 PM</span>
+                        <div>
+                          <div className="font-medium text-sm">Evening Cultural Experience</div>
+                          <div className="text-xs text-gray-600">Immerse in local culture and traditions</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Budget Overview */}
+            {/* Budget Breakdown */}
             <div className="mb-6">
-              <h3 className="text-lg font-bold mb-3">Budget Overview</h3>
+              <h3 className="text-lg font-bold mb-4 text-purple-800">Estimated Budget Breakdown</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-blue-50 rounded-lg">
-                  <div className="text-blue-600 text-2xl mb-1">✈️</div>
-                  <div className="text-xs font-medium">Flights</div>
-                  <div className="text-sm font-bold">₹12,500</div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <div className="text-2xl mb-2">✈️</div>
+                  <div className="text-xs font-medium text-purple-600">Flights</div>
+                  <div className="text-lg font-bold text-purple-800">$1,200</div>
                 </div>
-                <div className="text-center p-3 bg-green-50 rounded-lg">
-                  <div className="text-green-600 text-2xl mb-1">🏨</div>
-                  <div className="text-xs font-medium">Accommodation</div>
-                  <div className="text-sm font-bold">₹25,500</div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <div className="text-2xl mb-2">🏨</div>
+                  <div className="text-xs font-medium text-purple-600">Hotels</div>
+                  <div className="text-lg font-bold text-purple-800">$800</div>
                 </div>
-                <div className="text-center p-3 bg-orange-50 rounded-lg">
-                  <div className="text-orange-600 text-2xl mb-1">🍽️</div>
-                  <div className="text-xs font-medium">Food & Activities</div>
-                  <div className="text-sm font-bold">₹14,050</div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <div className="text-2xl mb-2">🍽️</div>
+                  <div className="text-xs font-medium text-purple-600">Food</div>
+                  <div className="text-lg font-bold text-purple-800">$400</div>
                 </div>
-                <div className="text-center p-3 bg-red-50 rounded-lg">
-                  <div className="text-red-600 text-2xl mb-1">💰</div>
-                  <div className="text-xs font-medium">Total Cost</div>
-                  <div className="text-sm font-bold">₹60,800</div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <div className="text-2xl mb-2">🎯</div>
+                  <div className="text-xs font-medium text-purple-600">Activities</div>
+                  <div className="text-lg font-bold text-purple-800">$300</div>
                 </div>
               </div>
             </div>
 
-            {/* Tips for smooth trip */}
-            <div className="mb-4">
-              <h3 className="text-lg font-bold mb-3">Tips for smooth trip</h3>
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <ul className="text-xs space-y-1 text-gray-600">
-                  <li>• Book flights and hotels through apps like MakeMyTrip for deals</li>
-                  <li>• Use BookMyForex for better currency exchange rates</li>
-                  <li>• Consider travel insurance from Policy Bazaar for added security</li>
-                  <li>• Download offline maps and translation apps</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Want to make changes section */}
+            {/* Customization Section */}
             <div className="mb-6">
-              <h3 className="text-lg font-bold mb-3">Want to make changes?</h3>
+              <h3 className="text-lg font-bold mb-3 text-purple-800">Want to customize your plan?</h3>
               <div className="flex gap-2">
                 <Input
                   value={changeRequest}
                   onChange={(e) => setChangeRequest(e.target.value)}
-                  placeholder="e.g., 'Add more adventure activities' or 'Find cheaper hotels'"
-                  className="flex-1"
+                  placeholder="e.g., 'Add more adventure activities' or 'Find cheaper accommodations'"
+                  className="flex-1 border-purple-200 focus:border-purple-500"
                 />
                 <Button 
                   onClick={handleSubmitChanges}
-                  className="bg-slate-800 hover:bg-slate-700 text-white px-6"
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-6"
                   disabled={!changeRequest.trim()}
                 >
                   Update Plan
@@ -262,21 +208,22 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 pt-4 border-t">
-              <Button onClick={handleDownloadPdf} variant="outline" size="sm" className="flex-1">
+            <div className="flex gap-2 pt-4 border-t border-purple-200">
+              <Button onClick={handleDownloadPdf} variant="outline" size="sm" className="flex-1 border-purple-200 text-purple-600 hover:bg-purple-50">
                 <Download className="h-4 w-4 mr-2" />
-                Download
+                Download PDF
               </Button>
-              <Button onClick={onUpdatePlan} variant="outline" size="sm" className="flex-1">
+              <Button onClick={onUpdatePlan} variant="outline" size="sm" className="flex-1 border-purple-200 text-purple-600 hover:bg-purple-50">
                 <Repeat className="h-4 w-4 mr-2" />
-                Update Plan
+                Regenerate
               </Button>
             </div>
           </div>
         ) : message.isShoppingResponse ? (
           <div className="space-y-6 bg-white rounded-lg p-6 shadow-lg">
             <div className="bg-blue-500 text-white p-4 rounded-t-lg -m-6 mb-6">
-              <h2 className="text-lg font-bold">Here are some product recommendations for you!</h2>
+              <h2 className="text-lg font-bold">PRODUCT RECOMMENDATIONS</h2>
+              <p className="text-blue-100">Curated just for you</p>
             </div>
             
             <div className="mb-4">
@@ -285,46 +232,78 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
 
             {/* Product Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div className="border rounded-lg p-4">
+              <div className="border rounded-lg p-4 border-blue-200">
                 <div className="h-32 bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                  <div className="text-gray-400">📱</div>
+                  <div className="text-4xl">🎧</div>
                 </div>
-                <h4 className="font-semibold text-sm">Premium Wireless Headphones</h4>
-                <p className="text-xs text-gray-600 mb-2">Noise-cancelling over-ear headphones with 30-hour battery life</p>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">$199.99</span>
-                  <span className="text-xs text-gray-500">Rating: 4.8/5</span>
+                <h4 className="font-semibold text-sm mb-1">Premium Wireless Headphones</h4>
+                <p className="text-xs text-gray-600 mb-3">Noise-cancelling over-ear headphones with 30-hour battery life</p>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-bold text-lg">$199.99</span>
+                  <span className="text-xs text-yellow-600 flex items-center gap-1">
+                    ★★★★★ 4.8/5
+                  </span>
                 </div>
-                <Button size="sm" variant="outline" className="w-full mt-2">
+                <Button size="sm" variant="outline" className="w-full border-blue-200 text-blue-600 hover:bg-blue-50">
                   View Product
                 </Button>
               </div>
 
-              <div className="border rounded-lg p-4">
+              <div className="border rounded-lg p-4 border-blue-200">
                 <div className="h-32 bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                  <div className="text-gray-400">⌚</div>
+                  <div className="text-4xl">⌚</div>
                 </div>
-                <h4 className="font-semibold text-sm">Smart Fitness Watch</h4>
-                <p className="text-xs text-gray-600 mb-2">Track your workouts, heart rate, and sleep patterns</p>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">$249.50</span>
-                  <span className="text-xs text-gray-500">Rating: 4.6/5</span>
+                <h4 className="font-semibold text-sm mb-1">Smart Fitness Watch</h4>
+                <p className="text-xs text-gray-600 mb-3">Track your workouts, heart rate, and sleep patterns</p>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-bold text-lg">$249.50</span>
+                  <span className="text-xs text-yellow-600 flex items-center gap-1">
+                    ★★★★☆ 4.6/5
+                  </span>
                 </div>
-                <Button size="sm" variant="outline" className="w-full mt-2">
+                <Button size="sm" variant="outline" className="w-full border-blue-200 text-blue-600 hover:bg-blue-50">
                   View Product
                 </Button>
               </div>
             </div>
 
+            {/* Why These Recommendations */}
+            <div className="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <h4 className="font-semibold text-blue-800 mb-3">Why these recommendations?</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="text-blue-600">🎯</div>
+                  <div>
+                    <div className="text-sm font-medium text-blue-800">Best Match</div>
+                    <div className="text-xs text-blue-600">Based on your preferences</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-blue-600">💰</div>
+                  <div>
+                    <div className="text-sm font-medium text-blue-800">Great Value</div>
+                    <div className="text-xs text-blue-600">Within your budget</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-blue-600">⭐</div>
+                  <div>
+                    <div className="text-sm font-medium text-blue-800">Top Rated</div>
+                    <div className="text-xs text-blue-600">Highly reviewed products</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Action Buttons */}
-            <div className="flex gap-2 pt-4 border-t">
-              <Button onClick={handleRegenerateProducts} variant="outline" size="sm" className="flex-1">
+            <div className="flex gap-2 pt-4 border-t border-blue-200">
+              <Button onClick={handleRegenerateProducts} variant="outline" size="sm" className="flex-1 border-blue-200 text-blue-600 hover:bg-blue-50">
                 <RefreshCcw className="h-4 w-4 mr-2" />
                 Regenerate
               </Button>
-              <Button variant="outline" size="sm" className="flex-1">
+              <Button variant="outline" size="sm" className="flex-1 border-blue-200 text-blue-600 hover:bg-blue-50">
                 <ThumbsUp className="h-4 w-4 mr-2" />
-                Like
+                Like Results
               </Button>
             </div>
           </div>
