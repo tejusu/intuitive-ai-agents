@@ -6,14 +6,13 @@ import { Agent } from '@/components/Layout';
 interface OutletContextType {
   activeAgent: Agent;
   selectedModel: string;
-  chatKey: number;
 }
 
 const Index = () => {
-  const { activeAgent, selectedModel, chatKey } = useOutletContext<OutletContextType>();
+  const { activeAgent, selectedModel } = useOutletContext<OutletContextType>();
 
   if (!activeAgent) {
-    return null;
+    return null; // Or a loading state
   }
 
   return (
@@ -21,8 +20,7 @@ const Index = () => {
       <ChatView 
         activeAgentName={activeAgent.name} 
         activeAgentIcon={activeAgent.icon} 
-        selectedModel={selectedModel}
-        chatKey={chatKey}
+        selectedModel={selectedModel} 
       />
     </div>
   );
