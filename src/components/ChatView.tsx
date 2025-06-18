@@ -3,8 +3,8 @@ import { Send, Sparkles, Bot, Plane, ShoppingBag, BrainCircuit } from 'lucide-re
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ChatMessage } from './ChatMessage';
-import { TravelPlannerForm, TravelPlanFormValues } from './TravelPlannerForm';
-import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
+import { TravelPlannerForm } from './TravelPlannerForm';
+import { ShoppingAssistantForm } from './ShoppingAssistantForm';
 
 interface ChatViewProps {
   activeAgentName: string;
@@ -95,16 +95,6 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
     }, 1000 + Math.random() * 2000);
   };
 
-  const handleTravelFormSubmit = (values: TravelPlanFormValues) => {
-    const message = `Plan a ${values.days}-day trip to ${values.destination} for ${values.travelers} travelers with a ${values.budget} budget. Interests: ${values.interests}. Travel style: ${values.style}.`;
-    handleSendMessage(message);
-  };
-
-  const handleShoppingFormSubmit = (values: ShoppingFormValues) => {
-    const message = `Help me find: ${values.query} in the ${values.category} category with a budget of ${values.budget}. Additional preferences: ${values.preferences}`;
-    handleSendMessage(message);
-  };
-
   const getAIResponse = (userMessage: string, agentName: string): string => {
     const responses = {
       'AI Chat': [
@@ -148,10 +138,10 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
 
   const renderAgentForm = () => {
     if (activeAgentName === 'Travel Planner') {
-      return <TravelPlannerForm onSubmit={handleTravelFormSubmit} />;
+      return <TravelPlannerForm onSubmit={handleSendMessage} />;
     }
     if (activeAgentName === 'Shopping Assistant') {
-      return <ShoppingAssistantForm onSubmit={handleShoppingFormSubmit} />;
+      return <ShoppingAssistantForm onSubmit={handleSendMessage} />;
     }
     return null;
   };
@@ -171,7 +161,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
                 Welcome to {activeAgentName}
               </h2>
               <p className="text-muted-foreground">
-                {selectedModel}
+                Model: {selectedModel}
               </p>
             </div>
           </div>
@@ -228,42 +218,22 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {messages.map((message) => (
-            <div key={message.id} className="flex items-start gap-4">
-              {!message.isUser && (
-                <div className="p-2 bg-primary/10 rounded-full">
-                  <ActiveIcon className="h-6 w-6 text-primary" />
-                </div>
-              )}
-              <div className={`flex-1 ${message.isUser ? 'text-right' : ''}`}>
-                <div className={`inline-block p-4 rounded-2xl max-w-md ${
-                  message.isUser 
-                    ? 'bg-primary text-primary-foreground rounded-br-none ml-auto' 
-                    : 'bg-muted rounded-bl-none'
-                }`}>
-                  <p className="whitespace-pre-wrap">{message.content}</p>
-                </div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  {message.timestamp.toLocaleTimeString()}
-                </div>
-              </div>
-              {message.isUser && (
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-medium">
-                  U
-                </div>
-              )}
-            </div>
+            <ChatMessage
+              key={message.id}
+              message={message.content}
+              isUser={message.isUser}
+              timestamp={message.timestamp}
+              agentName={message.agentName}
+            />
           ))}
           {isLoading && (
-            <div className="flex items-start gap-4">
-              <div className="p-2 bg-primary/10 rounded-full">
-                <ActiveIcon className="h-6 w-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <div className="inline-block p-4 rounded-2xl rounded-bl-none bg-muted">
-                  <p>Thinking...</p>
-                </div>
-              </div>
-            </div>
+            <ChatMessage
+              message="Thinking..."
+              isUser={false}
+              timestamp={new Date()}
+              agentName={activeAgentName}
+              isLoading={true}
+            />
           )}
         </div>
         <div ref={messagesEndRef} />
@@ -272,7 +242,7 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
       <div className="p-6 border-t border-border/50 bg-background/80 backdrop-blur-sm">
         <div className="flex items-center justify-between max-w-4xl mx-auto">
           <div className="text-xs text-muted-foreground">
-            {selectedModel}
+            Model: {selectedModel}
           </div>
           <div className="flex gap-3">
             <Input
