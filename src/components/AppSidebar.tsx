@@ -44,8 +44,17 @@ export function AppSidebar({ agents, onAgentChange, onNewChat }: AppSidebarProps
     <Sidebar className="border-r border-sidebar-border bg-sidebar">
       <SidebarHeader className="p-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Sparkles className="h-6 w-6" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl">
+            <img 
+              src="/lovable-uploads/239baafc-1c17-441e-bffa-c43e0db81aac.png" 
+              alt="PilottAI" 
+              className="h-8 w-auto block dark:hidden"
+            />
+            <img 
+              src="/lovable-uploads/b6cb5982-1616-40c9-a63f-51dbc930c3fe.png" 
+              alt="PilottAI" 
+              className="h-8 w-auto hidden dark:block"
+            />
           </div>
           <div>
             <h1 className="text-lg font-bold text-sidebar-foreground">PilottAI</h1>

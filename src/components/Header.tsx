@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronDown, Settings, LogOut, Sparkles } from 'lucide-react';
+import { ChevronDown, Settings, LogOut, Sparkles, User, CreditCard, HelpCircle, Moon, Sun } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +26,7 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
   const activeAgent = agents.find(agent => agent.active);
 
   return (
-    <header className="flex h-16 items-center justify-between px-6 border-b border-border/50 bg-background/80 backdrop-blur-sm">
+    <header className="flex h-16 items-center justify-between px-6 border-b border-border/50 bg-black dark:bg-black backdrop-blur-sm">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="h-8 w-8" />
         
@@ -37,8 +37,8 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
                 <activeAgent.icon className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h2 className="text-sm font-semibold text-foreground">{activeAgent.name}</h2>
-                <p className="text-xs text-muted-foreground">Active Agent</p>
+                <h2 className="text-sm font-semibold text-white">{activeAgent.name}</h2>
+                <p className="text-xs text-gray-400">Active Agent</p>
               </div>
             </>
           )}
@@ -82,16 +82,28 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">User</p>
+                <p className="text-sm font-medium leading-none">John Doe</p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  user@example.com
+                  john.doe@example.com
                 </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer">
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <CreditCard className="mr-2 h-4 w-4" />
+              <span>Billing</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <HelpCircle className="mr-2 h-4 w-4" />
+              <span>Support</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer">
