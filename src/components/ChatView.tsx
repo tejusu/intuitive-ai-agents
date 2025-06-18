@@ -1,11 +1,11 @@
 
-import { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Bot, Plane, ShoppingBag, BrainCircuit, Copy, ThumbsUp, ThumbsDown, RefreshCcw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ChatMessage } from './ChatMessage';
+import { useState, useEffect } from 'react';
+import { ChatWelcomeScreen } from './ChatWelcomeScreen';
+import { ChatMessageList } from './ChatMessageList';
+import { ChatInput } from './ChatInput';
 import { TravelPlannerForm, TravelPlanFormValues } from './TravelPlannerForm';
 import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
+import { Message, getAIResponse } from '../utils/chatHelpers';
 import { toast } from 'sonner';
 
 interface ChatViewProps {
@@ -15,60 +15,12 @@ interface ChatViewProps {
   chatKey: number;
 }
 
-interface Message {
-  id: string;
-  content: string;
-  isUser: boolean;
-  timestamp: Date;
-  agentName?: string;
-  isTravelPlan?: boolean;
-  isShoppingResponse?: boolean;
-  planDetails?: TravelPlanFormValues;
-  shoppingQuery?: string;
-}
-
-const agentPrompts = {
-  'AI Chat': [
-    'Explain quantum computing in simple terms',
-    'Help me write a professional email',
-    'What are the latest AI trends?',
-    'Debug my React component'
-  ],
-  'Travel Planner': [
-    'Plan a 7-day trip to Europe',
-    'Find budget-friendly destinations',
-    'What to pack for a winter vacation',
-    'Local cuisine recommendations'
-  ],
-  'Shopping Assistant': [
-    'Find the best laptop under $1000',
-    'Compare wireless headphones',
-    'Sustainable fashion brands',
-    'Home office setup essentials'
-  ],
-  'Researcher': [
-    'Latest developments in renewable energy',
-    'Summarize recent medical breakthroughs',
-    'Market analysis for tech stocks',
-    'Climate change research updates'
-  ]
-};
-
-export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selectedModel, chatKey }: ChatViewProps) {
+export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chatKey }: ChatViewProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showTravelForm, setShowTravelForm] = useState(false);
   const [showShoppingForm, setShowShoppingForm] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   useEffect(() => {
     setMessages([]);
@@ -138,7 +90,6 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
     const messageToSend = message || inputValue.trim();
     if (!messageToSend) return;
 
-    // Check if we should show forms
     if (activeAgentName === 'Travel Planner' && messages.length === 0) {
       setShowTravelForm(true);
       return;
@@ -160,7 +111,6 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
     setInputValue('');
     setIsLoading(true);
 
-    // Simulate AI response
     setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -172,38 +122,6 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
       setMessages(prev => [...prev, aiResponse]);
       setIsLoading(false);
     }, 1000 + Math.random() * 2000);
-  };
-
-  const getAIResponse = (userMessage: string, agentName: string): string => {
-    const responses = {
-      'AI Chat': [
-        "I'd be happy to help you with that! Let me break this down for you...",
-        "That's a great question! Here's what I think...",
-        "Based on my knowledge, I can provide you with the following insights...",
-        "Let me analyze this for you and provide a comprehensive answer..."
-      ],
-      'Travel Planner': [
-        "🌍 Exciting! I've found some amazing destinations for you. Here's what I recommend...",
-        "✈️ Based on your preferences, I've crafted the perfect itinerary...",
-        "🗺️ Let me help you plan an unforgettable trip with these suggestions...",
-        "🏖️ I've researched the best options for your travel needs..."
-      ],
-      'Shopping Assistant': [
-        "🛍️ I've found some excellent options that match your criteria...",
-        "💰 Here are the best deals I've discovered for you...",
-        "⭐ Based on reviews and ratings, I recommend these products...",
-        "🔍 After comparing various options, here's what stands out..."
-      ],
-      'Researcher': [
-        "📊 Based on the latest research and data, here are my findings...",
-        "🔬 I've analyzed multiple sources and here's what the evidence shows...",
-        "📈 The current trends and studies indicate that...",
-        "📚 According to recent publications and expert opinions..."
-      ]
-    };
-
-    const agentResponses = responses[agentName] || responses['AI Chat'];
-    return agentResponses[Math.floor(Math.random() * agentResponses.length)];
   };
 
   const handleCopy = (content: string) => {
@@ -230,8 +148,6 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
     }
   };
 
-  const prompts = agentPrompts[activeAgentName] || agentPrompts['AI Chat'];
-
   if (showTravelForm) {
     return (
       <div className="flex flex-col h-full">
@@ -254,168 +170,38 @@ export function ChatView({ activeAgentName, activeAgentIcon: ActiveIcon, selecte
 
   if (messages.length === 0) {
     return (
-      <div className="flex flex-col h-full">
-        <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-8">
-          <div className="text-center space-y-4 animate-fade-in-up">
-            <div className="flex justify-center">
-              <div className="p-4 bg-primary/10 rounded-2xl">
-                <ActiveIcon className="h-12 w-12 text-primary" />
-              </div>
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                Welcome to {activeAgentName}
-              </h2>
-              <p className="text-muted-foreground">
-                {selectedModel}
-              </p>
-            </div>
-          </div>
-
-          <div className="w-full max-w-4xl space-y-4">
-            <h3 className="text-lg font-semibold text-center text-foreground">
-              Suggested prompts
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {prompts.map((prompt, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="p-4 h-auto text-left justify-start bg-card hover:bg-accent transition-all duration-200 animate-scale-in rounded-xl border-border/50"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                  onClick={() => handleSendMessage(prompt)}
-                >
-                  <div className="flex items-start gap-3">
-                    <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">{prompt}</span>
-                  </div>
-                </Button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="p-6 border-t border-border/50">
-          <div className="flex gap-3 max-w-4xl mx-auto">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={`Message ${activeAgentName}...`}
-              className="flex-1 rounded-xl border-border/50 bg-background/50 backdrop-blur-sm"
-            />
-            <Button 
-              onClick={() => handleSendMessage()}
-              disabled={!inputValue.trim()}
-              className="rounded-xl bg-primary hover:bg-primary/90"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ChatWelcomeScreen
+        activeAgentName={activeAgentName}
+        activeAgentIcon={activeAgentIcon}
+        selectedModel={selectedModel}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        onSendMessage={handleSendMessage}
+        onKeyPress={handleKeyPress}
+      />
     );
   }
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {messages.map((message) => (
-            <div key={message.id} className="space-y-4">
-              <ChatMessage
-                message={{
-                  id: parseInt(message.id),
-                  text: message.content,
-                  sender: message.isUser ? 'user' : 'ai',
-                  isTravelPlan: message.isTravelPlan,
-                  planDetails: message.planDetails,
-                  isShoppingResponse: message.isShoppingResponse,
-                  shoppingQuery: message.shoppingQuery
-                }}
-                agentIcon={<ActiveIcon className="h-4 w-4 text-primary" />}
-                onStartEdit={() => {}}
-                onUpdatePlan={() => {}}
-                onRegenerateShoppingResults={() => {}}
-              />
-              {!message.isUser && !message.isTravelPlan && !message.isShoppingResponse && (
-                <div className="flex items-center gap-2 justify-end max-w-4xl mx-auto">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => handleCopy(message.content)}
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={handleLike}
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    <ThumbsUp className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={handleDislike}
-                    className="text-muted-foreground hover:text-destructive"
-                  >
-                    <ThumbsDown className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={handleRegenerate}
-                    className="text-muted-foreground hover:text-primary"
-                  >
-                    <RefreshCcw className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </div>
-          ))}
-          {isLoading && (
-            <ChatMessage
-              message={{
-                id: Date.now(),
-                text: "Thinking...",
-                sender: 'ai'
-              }}
-              agentIcon={<ActiveIcon className="h-4 w-4 text-primary" />}
-              onStartEdit={() => {}}
-              onUpdatePlan={() => {}}
-              onRegenerateShoppingResults={() => {}}
-            />
-          )}
-        </div>
-        <div ref={messagesEndRef} />
-      </div>
-
-      <div className="p-6 border-t border-border/50 bg-background/80 backdrop-blur-sm">
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
-          <div className="text-xs text-muted-foreground">
-            {selectedModel}
-          </div>
-          <div className="flex gap-3">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={`Message ${activeAgentName}...`}
-              className="flex-1 rounded-xl border-border/50 bg-background/50 backdrop-blur-sm"
-            />
-            <Button 
-              onClick={() => handleSendMessage()}
-              disabled={!inputValue.trim() || isLoading}
-              className="rounded-xl bg-primary hover:bg-primary/90"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ChatMessageList
+        messages={messages}
+        isLoading={isLoading}
+        activeAgentIcon={activeAgentIcon}
+        onCopy={handleCopy}
+        onLike={handleLike}
+        onDislike={handleDislike}
+        onRegenerate={handleRegenerate}
+      />
+      <ChatInput
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        onSendMessage={handleSendMessage}
+        onKeyPress={handleKeyPress}
+        isLoading={isLoading}
+        activeAgentName={activeAgentName}
+        selectedModel={selectedModel}
+      />
     </div>
   );
 }
