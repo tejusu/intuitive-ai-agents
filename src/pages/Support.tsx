@@ -136,11 +136,11 @@ const Support = () => {
                             </div>
                             <div>
                                 <h4 className="font-medium">How do I upgrade my plan?</h4>
-                                <p className="text-sm text-muted-foreground">Go to Settings > Billing to view and change your subscription plan.</p>
+                                <p className="text-sm text-muted-foreground">Go to Settings {`>`} Billing to view and change your subscription plan.</p>
                             </div>
                             <div>
                                 <h4 className="font-medium">Can I export my data?</h4>
-                                <p className="text-sm text-muted-foreground">Yes, you can export your data from Settings > Data Export.</p>
+                                <p className="text-sm text-muted-foreground">Yes, you can export your data from Settings {`>`} Data Export.</p>
                             </div>
                             <Button variant="outline" className="w-full">
                                 View All FAQs
