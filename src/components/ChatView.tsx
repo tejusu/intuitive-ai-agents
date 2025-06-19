@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { ChatWelcomeScreen } from './ChatWelcomeScreen';
 import { ChatMessageList } from './ChatMessageList';
 import { ChatInput } from './ChatInput';
 import { TravelPlannerForm, TravelPlanFormValues } from './TravelPlannerForm';
 import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
+import { ResearchAssistantForm, ResearchFormValues } from './ResearchAssistantForm';
 import { Message, getAIResponse } from '../utils/chatHelpers';
 import { toast } from 'sonner';
 
@@ -21,11 +21,13 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
   const [isLoading, setIsLoading] = useState(false);
   const [showTravelForm, setShowTravelForm] = useState(false);
   const [showShoppingForm, setShowShoppingForm] = useState(false);
+  const [showResearchForm, setShowResearchForm] = useState(false);
 
   useEffect(() => {
     setMessages([]);
     setShowTravelForm(false);
     setShowShoppingForm(false);
+    setShowResearchForm(false);
   }, [chatKey]);
 
   const handleTravelFormSubmit = (values: TravelPlanFormValues) => {
@@ -86,6 +88,36 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
     }, 2000);
   };
 
+  const handleResearchFormSubmit = (values: ResearchFormValues) => {
+    const formMessage = `I need research on "${values.topic}" with ${values.type} approach, ${values.depth} depth level, timeframe: ${values.timeframe}. ${values.focusArea ? `Focus area: ${values.focusArea}. ` : ''}${values.questions ? `Specific questions: ${values.questions}` : ''}`;
+    
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: formMessage,
+      isUser: true,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setShowResearchForm(false);
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "Here's my comprehensive research findings!",
+        isUser: false,
+        timestamp: new Date(),
+        agentName: activeAgentName,
+        isResearchResponse: true,
+        researchTopic: values.topic,
+        researchDetails: values
+      };
+      setMessages(prev => [...prev, aiResponse]);
+      setIsLoading(false);
+    }, 2000);
+  };
+
   const handleSendMessage = async (message?: string) => {
     const messageToSend = message || inputValue.trim();
     if (!messageToSend) return;
@@ -97,6 +129,11 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
     
     if (activeAgentName === 'Shopping Assistant' && messages.length === 0) {
       setShowShoppingForm(true);
+      return;
+    }
+
+    if (activeAgentName === 'Researcher' && messages.length === 0) {
+      setShowResearchForm(true);
       return;
     }
 
@@ -163,6 +200,16 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
       <div className="flex flex-col h-full">
         <div className="flex-1 flex flex-col items-center justify-center p-8">
           <ShoppingAssistantForm onSubmit={handleShoppingFormSubmit} />
+        </div>
+      </div>
+    );
+  }
+
+  if (showResearchForm) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex-1 flex flex-col items-center justify-center p-8">
+          <ResearchAssistantForm onSubmit={handleResearchFormSubmit} />
         </div>
       </div>
     );
