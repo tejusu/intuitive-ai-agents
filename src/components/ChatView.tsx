@@ -5,7 +5,6 @@ import { ChatMessageList } from './ChatMessageList';
 import { ChatInput } from './ChatInput';
 import { TravelPlannerForm, TravelPlanFormValues } from './TravelPlannerForm';
 import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
-import { ResearchAssistantForm, ResearchFormValues } from './ResearchAssistantForm';
 import { Message, getAIResponse } from '../utils/chatHelpers';
 import { toast } from 'sonner';
 
@@ -22,13 +21,11 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
   const [isLoading, setIsLoading] = useState(false);
   const [showTravelForm, setShowTravelForm] = useState(false);
   const [showShoppingForm, setShowShoppingForm] = useState(false);
-  const [showResearchForm, setShowResearchForm] = useState(false);
 
   useEffect(() => {
     setMessages([]);
     setShowTravelForm(false);
     setShowShoppingForm(false);
-    setShowResearchForm(false);
   }, [chatKey]);
 
   const handleTravelFormSubmit = (values: TravelPlanFormValues) => {
@@ -89,36 +86,6 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
     }, 2000);
   };
 
-  const handleResearchFormSubmit = (values: ResearchFormValues) => {
-    const formMessage = `I need research on "${values.topic}" with ${values.researchType} approach, ${values.researchDepth} depth, ${values.timeframe} timeframe. ${values.focusArea ? `Focus: ${values.focusArea}.` : ''} ${values.specificQuestions ? `Specific questions: ${values.specificQuestions}` : ''}`;
-    
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: formMessage,
-      isUser: true,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setShowResearchForm(false);
-    setIsLoading(true);
-
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content: "Here's my comprehensive research on your topic!",
-        isUser: false,
-        timestamp: new Date(),
-        agentName: activeAgentName,
-        isResearchResponse: true,
-        researchTopic: values.topic,
-        researchType: values.researchType
-      };
-      setMessages(prev => [...prev, aiResponse]);
-      setIsLoading(false);
-    }, 2000);
-  };
-
   const handleSendMessage = async (message?: string) => {
     const messageToSend = message || inputValue.trim();
     if (!messageToSend) return;
@@ -130,11 +97,6 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
     
     if (activeAgentName === 'Shopping Assistant' && messages.length === 0) {
       setShowShoppingForm(true);
-      return;
-    }
-
-    if (activeAgentName === 'Research Assistant' && messages.length === 0) {
-      setShowResearchForm(true);
       return;
     }
 
@@ -206,16 +168,6 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
     );
   }
 
-  if (showResearchForm) {
-    return (
-      <div className="flex flex-col h-full">
-        <div className="flex-1 flex flex-col items-center justify-center p-8">
-          <ResearchAssistantForm onSubmit={handleResearchFormSubmit} />
-        </div>
-      </div>
-    );
-  }
-
   if (messages.length === 0) {
     return (
       <ChatWelcomeScreen
@@ -225,12 +177,7 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
         inputValue={inputValue}
         setInputValue={setInputValue}
         onSendMessage={handleSendMessage}
-        onKeyPress={(e: React.KeyboardEvent) => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
-          }
-        }}
+        onKeyPress={handleKeyPress}
       />
     );
   }
@@ -241,24 +188,16 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
         messages={messages}
         isLoading={isLoading}
         activeAgentIcon={activeAgentIcon}
-        onCopy={(content: string) => {
-          navigator.clipboard.writeText(content);
-          toast.success('Message copied to clipboard!');
-        }}
-        onLike={() => toast.success('Feedback recorded!')}
-        onDislike={() => toast.success('Feedback recorded!')}
-        onRegenerate={() => toast.success('Regenerating response...')}
+        onCopy={handleCopy}
+        onLike={handleLike}
+        onDislike={handleDislike}
+        onRegenerate={handleRegenerate}
       />
       <ChatInput
         inputValue={inputValue}
         setInputValue={setInputValue}
         onSendMessage={handleSendMessage}
-        onKeyPress={(e: React.KeyboardEvent) => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
-          }
-        }}
+        onKeyPress={handleKeyPress}
         isLoading={isLoading}
         activeAgentName={activeAgentName}
         selectedModel={selectedModel}

@@ -16,9 +16,6 @@ interface Message {
   planDetails?: TravelPlanFormValues;
   isShoppingResponse?: boolean;
   shoppingQuery?: string;
-  isResearchResponse?: boolean;
-  researchTopic?: string;
-  researchType?: string;
 }
 
 interface ChatMessageProps {
@@ -307,121 +304,6 @@ export function ChatMessage({ message, agentIcon, onStartEdit, onUpdatePlan, onR
               <Button variant="outline" size="sm" className="flex-1 border-blue-200 text-blue-600 hover:bg-blue-50">
                 <ThumbsUp className="h-4 w-4 mr-2" />
                 Like Results
-              </Button>
-            </div>
-          </div>
-        ) : message.isResearchResponse ? (
-          <div className="space-y-6 bg-white rounded-lg p-6 shadow-lg">
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 rounded-t-lg -m-6 mb-6">
-              <h2 className="text-lg font-bold">RESEARCH REPORT</h2>
-              <p className="text-purple-100">Comprehensive Analysis</p>
-            </div>
-            
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-3 text-purple-800">
-                Research Topic: "{message.researchTopic}"
-              </h3>
-              <div className="inline-block bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
-                {message.researchType?.charAt(0).toUpperCase() + message.researchType?.slice(1)} Research
-              </div>
-            </div>
-
-            {/* Executive Summary */}
-            <div className="mb-6 bg-purple-50 p-4 rounded-lg border border-purple-200">
-              <h4 className="font-semibold text-purple-800 mb-3 flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                Executive Summary
-              </h4>
-              <p className="text-sm text-purple-700 leading-relaxed">
-                This comprehensive research provides detailed insights into {message.researchTopic}. 
-                Our analysis covers current trends, key findings, and strategic recommendations 
-                based on the latest available data and expert opinions.
-              </p>
-            </div>
-
-            {/* Key Findings */}
-            <div className="mb-6">
-              <h4 className="font-semibold text-purple-800 mb-4 flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                Key Findings
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="border border-purple-200 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">📊</div>
-                    <div>
-                      <h5 className="font-medium text-sm mb-1">Market Trends</h5>
-                      <p className="text-xs text-gray-600">Current market dynamics and emerging patterns</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="border border-purple-200 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">🔍</div>
-                    <div>
-                      <h5 className="font-medium text-sm mb-1">Key Insights</h5>
-                      <p className="text-xs text-gray-600">Critical analysis and expert perspectives</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="border border-purple-200 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">📈</div>
-                    <div>
-                      <h5 className="font-medium text-sm mb-1">Future Outlook</h5>
-                      <p className="text-xs text-gray-600">Projected developments and opportunities</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="border border-purple-200 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">💡</div>
-                    <div>
-                      <h5 className="font-medium text-sm mb-1">Recommendations</h5>
-                      <p className="text-xs text-gray-600">Strategic suggestions and action items</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Data Sources */}
-            <div className="mb-6 bg-indigo-50 p-4 rounded-lg border border-indigo-200">
-              <h4 className="font-semibold text-indigo-800 mb-3">Research Methodology & Sources</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="text-indigo-600">📚</div>
-                  <div>
-                    <div className="text-sm font-medium text-indigo-800">Academic Papers</div>
-                    <div className="text-xs text-indigo-600">Peer-reviewed research</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-indigo-600">🏢</div>
-                  <div>
-                    <div className="text-sm font-medium text-indigo-800">Industry Reports</div>
-                    <div className="text-xs text-indigo-600">Market analysis data</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-indigo-600">📰</div>
-                  <div>
-                    <div className="text-sm font-medium text-indigo-800">Current News</div>
-                    <div className="text-xs text-indigo-600">Latest developments</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-2 pt-4 border-t border-purple-200">
-              <Button variant="outline" size="sm" className="flex-1 border-purple-200 text-purple-600 hover:bg-purple-50">
-                <Download className="h-4 w-4 mr-2" />
-                Export Report
-              </Button>
-              <Button variant="outline" size="sm" className="flex-1 border-purple-200 text-purple-600 hover:bg-purple-50">
-                <RefreshCcw className="h-4 w-4 mr-2" />
-                Update Research
               </Button>
             </div>
           </div>

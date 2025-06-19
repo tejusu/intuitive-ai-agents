@@ -1,3 +1,4 @@
+
 import { TravelPlanFormValues } from '../components/TravelPlannerForm';
 
 export interface Message {
@@ -7,69 +8,66 @@ export interface Message {
   timestamp: Date;
   agentName?: string;
   isTravelPlan?: boolean;
-  planDetails?: any;
   isShoppingResponse?: boolean;
+  planDetails?: TravelPlanFormValues;
   shoppingQuery?: string;
-  isResearchResponse?: boolean;
-  researchTopic?: string;
-  researchType?: string;
 }
 
-export const agentPrompts: { [key: string]: string[] } = {
+export const agentPrompts = {
   'AI Chat': [
-    "What's the latest in AI technology?",
-    "Help me brainstorm ideas for my project",
-    "Explain quantum computing in simple terms",
-    "What are the best practices for remote work?"
+    'Explain quantum computing in simple terms',
+    'Help me write a professional email',
+    'What are the latest AI trends?',
+    'Debug my React component'
   ],
   'Travel Planner': [
-    "Plan a weekend getaway to Paris",
-    "I need a budget-friendly trip to Southeast Asia",
-    "Suggest romantic destinations for honeymoon",
-    "Plan a family vacation with kids under 10"
+    'Plan a 7-day trip to Europe',
+    'Find budget-friendly destinations',
+    'What to pack for a winter vacation',
+    'Local cuisine recommendations'
   ],
   'Shopping Assistant': [
-    "Find me the best laptop for coding",
-    "I need workout gear for home fitness",
-    "Recommend skincare products for sensitive skin",
-    "Find gifts under $50 for my friend's birthday"
+    'Find the best laptop under $1000',
+    'Compare wireless headphones',
+    'Sustainable fashion brands',
+    'Home office setup essentials'
   ],
-  'Research Assistant': [
-    "Research the impact of AI on job markets",
-    "Analyze current trends in renewable energy",
-    "Study the effects of remote work on productivity",
-    "Investigate blockchain applications in healthcare"
+  'Researcher': [
+    'Latest developments in renewable energy',
+    'Summarize recent medical breakthroughs',
+    'Market analysis for tech stocks',
+    'Climate change research updates'
   ]
 };
 
-export const getAIResponse = (message: string, agentName: string): string => {
+export const getAIResponse = (userMessage: string, agentName: string): string => {
   const responses = {
     'AI Chat': [
-      "That's a great question! Let me help you with that...",
-      "I understand what you're looking for. Here's my take on it...",
-      "Interesting perspective! Let me share some insights...",
-      "Based on current information, here's what I can tell you..."
+      "I'd be happy to help you with that! Let me break this down for you...",
+      "That's a great question! Here's what I think...",
+      "Based on my knowledge, I can provide you with the following insights...",
+      "Let me analyze this for you and provide a comprehensive answer..."
     ],
     'Travel Planner': [
-      "What an exciting destination! Let me create the perfect itinerary for you...",
-      "I love helping with travel plans! Here are some amazing suggestions...",
-      "That sounds like a wonderful trip! Let me help you make it unforgettable...",
-      "Great choice! I'll help you discover the best experiences there..."
+      "🌍 Exciting! I've found some amazing destinations for you. Here's what I recommend...",
+      "✈️ Based on your preferences, I've crafted the perfect itinerary...",
+      "🗺️ Let me help you plan an unforgettable trip with these suggestions...",
+      "🏖️ I've researched the best options for your travel needs..."
     ],
     'Shopping Assistant': [
-      "I've found some fantastic options that match your criteria...",
-      "Great choice! Here are the best products I recommend...",
-      "I've compared several options and here are my top picks...",
-      "Perfect timing! I found some great deals on exactly what you need..."
+      "🛍️ I've found some excellent options that match your criteria...",
+      "💰 Here are the best deals I've discovered for you...",
+      "⭐ Based on reviews and ratings, I recommend these products...",
+      "🔍 After comparing various options, here's what stands out..."
     ],
-    'Research Assistant': [
-      "I've conducted thorough research on this topic. Here are the key findings...",
-      "This is a fascinating subject! My research reveals several important insights...",
-      "I've analyzed multiple sources and compiled comprehensive findings...",
-      "Based on my research across various databases and sources..."
+    'Researcher': [
+      "📊 Based on the latest research and data, here are my findings...",
+      "🔬 I've analyzed multiple sources and here's what the evidence shows...",
+      "📈 The current trends and studies indicate that...",
+      "📚 According to recent publications and expert opinions..."
     ]
   };
 
-  const agentResponses = responses[agentName as keyof typeof responses] || responses['AI Chat'];
+  const agentResponses = responses[agentName] || responses['AI Chat'];
   return agentResponses[Math.floor(Math.random() * agentResponses.length)];
 };
