@@ -4,26 +4,26 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Mail, Phone, Globe, Camera } from "lucide-react";
+import { Calendar, MapPin, Mail, Phone, Globe, Camera, X } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const { toast } = useToast();
+    const navigate = useNavigate();
     const [firstName, setFirstName] = useState("John");
     const [lastName, setLastName] = useState("Doe");
     const [email, setEmail] = useState("john.doe@example.com");
     const [phone, setPhone] = useState("+1 (555) 123-4567");
-    const [bio, setBio] = useState("Passionate AI enthusiast and full-stack developer with expertise in React, Node.js, and machine learning. Love exploring new technologies and building innovative solutions.");
     const [location, setLocation] = useState("San Francisco, CA");
     const [website, setWebsite] = useState("https://johndoe.dev");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
 
     const handleSaveChanges = () => {
-        // Simulate saving changes
+        console.log("Saving changes:", { firstName, lastName, email });
         toast({
             title: "Profile Updated",
             description: "Your profile has been successfully updated.",
@@ -31,12 +31,10 @@ const Profile = () => {
     };
 
     const handleCancel = () => {
-        // Reset form to original values
         setFirstName("John");
         setLastName("Doe");
         setEmail("john.doe@example.com");
         setPhone("+1 (555) 123-4567");
-        setBio("Passionate AI enthusiast and full-stack developer with expertise in React, Node.js, and machine learning. Love exploring new technologies and building innovative solutions.");
         setLocation("San Francisco, CA");
         setWebsite("https://johndoe.dev");
         toast({
@@ -54,7 +52,7 @@ const Profile = () => {
             });
             return;
         }
-        // Simulate password update
+        console.log("Updating password");
         toast({
             title: "Password Updated",
             description: "Your password has been successfully updated.",
@@ -64,17 +62,29 @@ const Profile = () => {
     };
 
     const handleUploadPhoto = () => {
-        // Simulate photo upload
+        console.log("Photo upload triggered");
         toast({
             title: "Photo Upload",
             description: "Photo upload functionality would be implemented here.",
         });
     };
 
+    const handleClose = () => {
+        navigate('/');
+    };
+
     return (
         <div className="p-4 md:p-6 lg:p-8 space-y-8 animate-fade-in max-w-6xl mx-auto">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={handleClose}
+                    className="h-8 w-8 rounded-full hover:bg-accent"
+                >
+                    <X className="h-4 w-4" />
+                </Button>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -230,36 +240,6 @@ const Profile = () => {
                             </div>
                             <div className="flex justify-end">
                                 <Button onClick={handleUpdatePassword}>Update Password</Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Preferences</CardTitle>
-                            <CardDescription>Customize your AI assistant experience.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="defaultAgent">Default Agent</Label>
-                                    <Input id="defaultAgent" defaultValue="AI Chat" readOnly className="bg-muted/50" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="preferredModel">Preferred Model</Label>
-                                    <Input id="preferredModel" defaultValue="ChatGPT 4.1" readOnly className="bg-muted/50" />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="interests">Interests</Label>
-                                <div className="flex flex-wrap gap-2 mb-2">
-                                    <Badge variant="secondary">Technology</Badge>
-                                    <Badge variant="secondary">Travel</Badge>
-                                    <Badge variant="secondary">Photography</Badge>
-                                    <Badge variant="secondary">Coding</Badge>
-                                    <Badge variant="secondary">AI/ML</Badge>
-                                </div>
-                                <Input id="interests" placeholder="Add new interests..." />
                             </div>
                         </CardContent>
                     </Card>

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ChatWelcomeScreen } from './ChatWelcomeScreen';
 import { ChatMessageList } from './ChatMessageList';
@@ -7,28 +8,28 @@ import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantFo
 import { ResearchAssistantForm, ResearchFormValues } from './ResearchAssistantForm';
 import { Message, getAIResponse } from '../utils/chatHelpers';
 import { toast } from 'sonner';
+import { Agent } from './Layout';
 
 interface ChatViewProps {
-  activeAgentName: string;
-  activeAgentIcon: any;
+  activeAgent: Agent;
   selectedModel: string;
-  chatKey: number;
 }
 
-export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chatKey }: ChatViewProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+export function ChatView({ activeAgent, selectedModel }: ChatViewProps) {
+  const [messages, setMessages] = useState<Message[]>(activeAgent.chatHistory || []);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showTravelForm, setShowTravelForm] = useState(false);
   const [showShoppingForm, setShowShoppingForm] = useState(false);
   const [showResearchForm, setShowResearchForm] = useState(false);
 
+  // Update messages when activeAgent changes
   useEffect(() => {
-    setMessages([]);
+    setMessages(activeAgent.chatHistory || []);
     setShowTravelForm(false);
     setShowShoppingForm(false);
     setShowResearchForm(false);
-  }, [chatKey]);
+  }, [activeAgent.name, activeAgent.chatKey]);
 
   const handleTravelFormSubmit = (values: TravelPlanFormValues) => {
     const formMessage = `I want to plan a ${values.days}-day trip to ${values.destination} for ${values.travelers} traveler(s) with a ${values.budget} budget, focusing on ${values.interests}.`;
@@ -40,7 +41,8 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setShowTravelForm(false);
     setIsLoading(true);
 
@@ -50,11 +52,12 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
         content: "I've created a detailed travel plan for you!",
         isUser: false,
         timestamp: new Date(),
-        agentName: activeAgentName,
+        agentName: activeAgent.name,
         isTravelPlan: true,
         planDetails: values
       };
-      setMessages(prev => [...prev, aiResponse]);
+      const updatedMessages = [...newMessages, aiResponse];
+      setMessages(updatedMessages);
       setIsLoading(false);
     }, 2000);
   };
@@ -69,7 +72,8 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setShowShoppingForm(false);
     setIsLoading(true);
 
@@ -79,11 +83,12 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
         content: "Here are my product recommendations for you!",
         isUser: false,
         timestamp: new Date(),
-        agentName: activeAgentName,
+        agentName: activeAgent.name,
         isShoppingResponse: true,
         shoppingQuery: values.query
       };
-      setMessages(prev => [...prev, aiResponse]);
+      const updatedMessages = [...newMessages, aiResponse];
+      setMessages(updatedMessages);
       setIsLoading(false);
     }, 2000);
   };
@@ -98,7 +103,8 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setShowResearchForm(false);
     setIsLoading(true);
 
@@ -108,12 +114,13 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
         content: "Here's my comprehensive research findings!",
         isUser: false,
         timestamp: new Date(),
-        agentName: activeAgentName,
+        agentName: activeAgent.name,
         isResearchResponse: true,
         researchTopic: values.topic,
         researchDetails: values
       };
-      setMessages(prev => [...prev, aiResponse]);
+      const updatedMessages = [...newMessages, aiResponse];
+      setMessages(updatedMessages);
       setIsLoading(false);
     }, 2000);
   };
@@ -122,17 +129,17 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
     const messageToSend = message || inputValue.trim();
     if (!messageToSend) return;
 
-    if (activeAgentName === 'Travel Planner' && messages.length === 0) {
+    if (activeAgent.name === 'Travel Planner' && messages.length === 0) {
       setShowTravelForm(true);
       return;
     }
     
-    if (activeAgentName === 'Shopping Assistant' && messages.length === 0) {
+    if (activeAgent.name === 'Shopping Assistant' && messages.length === 0) {
       setShowShoppingForm(true);
       return;
     }
 
-    if (activeAgentName === 'Researcher' && messages.length === 0) {
+    if (activeAgent.name === 'Researcher' && messages.length === 0) {
       setShowResearchForm(true);
       return;
     }
@@ -144,19 +151,21 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setInputValue('');
     setIsLoading(true);
 
     setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: getAIResponse(messageToSend, activeAgentName),
+        content: getAIResponse(messageToSend, activeAgent.name),
         isUser: false,
         timestamp: new Date(),
-        agentName: activeAgentName
+        agentName: activeAgent.name
       };
-      setMessages(prev => [...prev, aiResponse]);
+      const updatedMessages = [...newMessages, aiResponse];
+      setMessages(updatedMessages);
       setIsLoading(false);
     }, 1000 + Math.random() * 2000);
   };
@@ -218,8 +227,8 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
   if (messages.length === 0) {
     return (
       <ChatWelcomeScreen
-        activeAgentName={activeAgentName}
-        activeAgentIcon={activeAgentIcon}
+        activeAgentName={activeAgent.name}
+        activeAgentIcon={activeAgent.icon}
         selectedModel={selectedModel}
         inputValue={inputValue}
         setInputValue={setInputValue}
@@ -234,7 +243,7 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
       <ChatMessageList
         messages={messages}
         isLoading={isLoading}
-        activeAgentIcon={activeAgentIcon}
+        activeAgentIcon={activeAgent.icon}
         onCopy={handleCopy}
         onLike={handleLike}
         onDislike={handleDislike}
@@ -246,7 +255,7 @@ export function ChatView({ activeAgentName, activeAgentIcon, selectedModel, chat
         onSendMessage={handleSendMessage}
         onKeyPress={handleKeyPress}
         isLoading={isLoading}
-        activeAgentName={activeAgentName}
+        activeAgentName={activeAgent.name}
         selectedModel={selectedModel}
       />
     </div>

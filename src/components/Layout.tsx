@@ -11,19 +11,19 @@ export interface Agent {
   icon: LucideIcon;
   active: boolean;
   chatHistory: any[];
+  chatKey: number;
 }
 
 const initialAgents: Agent[] = [
-  { name: 'AI Chat', icon: Bot, active: true, chatHistory: [] },
-  { name: 'Travel Planner', icon: Plane, active: false, chatHistory: [] },
-  { name: 'Shopping Assistant', icon: ShoppingBag, active: false, chatHistory: [] },
-  { name: 'Researcher', icon: BrainCircuit, active: false, chatHistory: [] },
+  { name: 'AI Chat', icon: Bot, active: true, chatHistory: [], chatKey: 0 },
+  { name: 'Travel Planner', icon: Plane, active: false, chatHistory: [], chatKey: 0 },
+  { name: 'Shopping Assistant', icon: ShoppingBag, active: false, chatHistory: [], chatKey: 0 },
+  { name: 'Researcher', icon: BrainCircuit, active: false, chatHistory: [], chatKey: 0 },
 ];
 
 const Layout = () => {
   const [agents, setAgents] = useState(initialAgents);
   const [selectedModel, setSelectedModel] = useState('ChatGPT 4.1');
-  const [chatKey, setChatKey] = useState(0);
 
   const handleAgentChange = (agentName: string) => {
     setAgents(agents.map(agent => ({
@@ -33,7 +33,14 @@ const Layout = () => {
   };
 
   const handleNewChat = () => {
-    setChatKey(prev => prev + 1);
+    const activeAgent = agents.find(agent => agent.active);
+    if (activeAgent) {
+      setAgents(agents.map(agent => 
+        agent.active 
+          ? { ...agent, chatKey: agent.chatKey + 1, chatHistory: [] }
+          : agent
+      ));
+    }
   };
 
   const activeAgent = agents.find(agent => agent.active) || initialAgents[0];
@@ -55,7 +62,7 @@ const Layout = () => {
               setSelectedModel={setSelectedModel}
             />
             <div className="flex-1 overflow-hidden">
-              <Outlet context={{ activeAgent, selectedModel, chatKey }} />
+              <Outlet context={{ activeAgent, selectedModel }} />
             </div>
           </SidebarInset>
         </div>
