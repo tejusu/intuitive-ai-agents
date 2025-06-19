@@ -1,5 +1,6 @@
 
 import { TravelPlanFormValues } from '../components/TravelPlannerForm';
+import { ResearchFormValues } from '../components/ResearchAssistantForm';
 
 export interface Message {
   id: string;
@@ -9,8 +10,11 @@ export interface Message {
   agentName?: string;
   isTravelPlan?: boolean;
   isShoppingResponse?: boolean;
+  isResearchResponse?: boolean;
   planDetails?: TravelPlanFormValues;
   shoppingQuery?: string;
+  researchTopic?: string;
+  researchDetails?: ResearchFormValues;
 }
 
 export const agentPrompts = {
