@@ -7,13 +7,74 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Mail, Phone, Globe, Camera } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Profile = () => {
+    const { toast } = useToast();
+    const [firstName, setFirstName] = useState("John");
+    const [lastName, setLastName] = useState("Doe");
+    const [email, setEmail] = useState("john.doe@example.com");
+    const [phone, setPhone] = useState("+1 (555) 123-4567");
+    const [bio, setBio] = useState("Passionate AI enthusiast and full-stack developer with expertise in React, Node.js, and machine learning. Love exploring new technologies and building innovative solutions.");
+    const [location, setLocation] = useState("San Francisco, CA");
+    const [website, setWebsite] = useState("https://johndoe.dev");
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+
+    const handleSaveChanges = () => {
+        // Simulate saving changes
+        toast({
+            title: "Profile Updated",
+            description: "Your profile has been successfully updated.",
+        });
+    };
+
+    const handleCancel = () => {
+        // Reset form to original values
+        setFirstName("John");
+        setLastName("Doe");
+        setEmail("john.doe@example.com");
+        setPhone("+1 (555) 123-4567");
+        setBio("Passionate AI enthusiast and full-stack developer with expertise in React, Node.js, and machine learning. Love exploring new technologies and building innovative solutions.");
+        setLocation("San Francisco, CA");
+        setWebsite("https://johndoe.dev");
+        toast({
+            title: "Changes Cancelled",
+            description: "All changes have been reverted.",
+        });
+    };
+
+    const handleUpdatePassword = () => {
+        if (!currentPassword || !newPassword) {
+            toast({
+                title: "Error",
+                description: "Please fill in both password fields.",
+                variant: "destructive",
+            });
+            return;
+        }
+        // Simulate password update
+        toast({
+            title: "Password Updated",
+            description: "Your password has been successfully updated.",
+        });
+        setCurrentPassword("");
+        setNewPassword("");
+    };
+
+    const handleUploadPhoto = () => {
+        // Simulate photo upload
+        toast({
+            title: "Photo Upload",
+            description: "Photo upload functionality would be implemented here.",
+        });
+    };
+
     return (
         <div className="p-4 md:p-6 lg:p-8 space-y-8 animate-fade-in max-w-6xl mx-auto">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
-                <Button>Edit Profile</Button>
+                <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -27,12 +88,17 @@ const Profile = () => {
                                         <AvatarImage src="https://github.com/shadcn.png" alt="@user" />
                                         <AvatarFallback className="text-2xl">JD</AvatarFallback>
                                     </Avatar>
-                                    <Button size="icon" variant="outline" className="absolute bottom-0 right-0 h-8 w-8 rounded-full">
+                                    <Button 
+                                        size="icon" 
+                                        variant="outline" 
+                                        className="absolute bottom-0 right-0 h-8 w-8 rounded-full"
+                                        onClick={handleUploadPhoto}
+                                    >
                                         <Camera className="h-4 w-4" />
                                     </Button>
                                 </div>
                                 <div className="text-center space-y-2">
-                                    <h2 className="text-2xl font-bold">John Doe</h2>
+                                    <h2 className="text-2xl font-bold">{firstName} {lastName}</h2>
                                     <p className="text-muted-foreground">AI Enthusiast & Developer</p>
                                     <div className="flex flex-wrap gap-2 justify-center">
                                         <Badge variant="secondary">Pro User</Badge>
@@ -42,15 +108,15 @@ const Profile = () => {
                                 <div className="w-full space-y-3 text-sm">
                                     <div className="flex items-center gap-2">
                                         <Mail className="h-4 w-4 text-muted-foreground" />
-                                        <span>john.doe@example.com</span>
+                                        <span>{email}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Phone className="h-4 w-4 text-muted-foreground" />
-                                        <span>+1 (555) 123-4567</span>
+                                        <span>{phone}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <MapPin className="h-4 w-4 text-muted-foreground" />
-                                        <span>San Francisco, CA</span>
+                                        <span>{location}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -58,7 +124,7 @@ const Profile = () => {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Globe className="h-4 w-4 text-muted-foreground" />
-                                        <span>johndoe.dev</span>
+                                        <span>{website}</span>
                                     </div>
                                 </div>
                             </div>
@@ -97,48 +163,73 @@ const Profile = () => {
                 <div className="lg:col-span-2 space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Personal Information</CardTitle>
-                            <CardDescription>Update your personal details and contact information.</CardDescription>
+                            <CardTitle>Profile</CardTitle>
+                            <CardDescription>Update your personal information and avatar.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="flex items-center gap-4">
+                                <Avatar className="h-20 w-20">
+                                    <AvatarImage src="https://github.com/shadcn.png" alt="@user" />
+                                    <AvatarFallback className="text-xl">JD</AvatarFallback>
+                                </Avatar>
+                                <Button variant="outline" onClick={handleUploadPhoto}>
+                                    Upload new photo
+                                </Button>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="firstName">Name</Label>
+                                    <Input 
+                                        id="firstName" 
+                                        value={firstName} 
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input 
+                                        id="email" 
+                                        type="email" 
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-4">
+                                <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+                                <Button onClick={handleSaveChanges}>Save Changes</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Security</CardTitle>
+                            <CardDescription>Change your password.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="grid md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="firstName">First Name</Label>
-                                    <Input id="firstName" defaultValue="John" />
+                                    <Label htmlFor="currentPassword">Current Password</Label>
+                                    <Input 
+                                        id="currentPassword" 
+                                        type="password" 
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                    />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="lastName">Last Name</Label>
-                                    <Input id="lastName" defaultValue="Doe" />
+                                    <Label htmlFor="newPassword">New Password</Label>
+                                    <Input 
+                                        id="newPassword" 
+                                        type="password" 
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                    />
                                 </div>
                             </div>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email" defaultValue="john.doe@example.com" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="phone">Phone</Label>
-                                    <Input id="phone" defaultValue="+1 (555) 123-4567" />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="bio">Bio</Label>
-                                <Textarea 
-                                    id="bio" 
-                                    placeholder="Tell us about yourself..."
-                                    defaultValue="Passionate AI enthusiast and full-stack developer with expertise in React, Node.js, and machine learning. Love exploring new technologies and building innovative solutions."
-                                    className="min-h-[100px]"
-                                />
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="location">Location</Label>
-                                    <Input id="location" defaultValue="San Francisco, CA" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="website">Website</Label>
-                                    <Input id="website" defaultValue="https://johndoe.dev" />
-                                </div>
+                            <div className="flex justify-end">
+                                <Button onClick={handleUpdatePassword}>Update Password</Button>
                             </div>
                         </CardContent>
                     </Card>
@@ -172,11 +263,6 @@ const Profile = () => {
                             </div>
                         </CardContent>
                     </Card>
-
-                    <div className="flex justify-end gap-4">
-                        <Button variant="outline">Cancel</Button>
-                        <Button>Save Changes</Button>
-                    </div>
                 </div>
             </div>
         </div>

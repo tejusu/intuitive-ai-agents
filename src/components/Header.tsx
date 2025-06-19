@@ -50,7 +50,7 @@ export function Header({ agents, onAgentChange, selectedModel, setSelectedModel 
       <div className="flex items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="gap-2 rounded-xl border-border/50 bg-background/50 backdrop-blur-sm">
+            <Button variant="outline" className="gap-2 rounded-xl border-border/50 bg-background/50 backdrop-blur-sm text-foreground hover:bg-accent hover:text-accent-foreground">
               <Sparkles className="h-4 w-4 text-primary" />
               {selectedModel}
               <ChevronDown className="h-4 w-4 text-muted-foreground" />
