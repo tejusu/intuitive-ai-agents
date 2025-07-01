@@ -1,13 +1,13 @@
 
 import { useRef, useEffect } from 'react';
 import { ChatMessage } from './ChatMessage';
-import { MessageActions } from './MessageActions';
 import { Message } from '../utils/chatHelpers';
+import { LucideIcon } from 'lucide-react';
 
 interface ChatMessageListProps {
   messages: Message[];
   isLoading: boolean;
-  activeAgentIcon: any;
+  activeAgentIcon: LucideIcon;
   onCopy: (content: string) => void;
   onLike: () => void;
   onDislike: () => void;
@@ -17,7 +17,7 @@ interface ChatMessageListProps {
 export function ChatMessageList({
   messages,
   isLoading,
-  activeAgentIcon: ActiveIcon,
+  activeAgentIcon,
   onCopy,
   onLike,
   onDislike,
@@ -37,43 +37,29 @@ export function ChatMessageList({
     <div className="flex-1 overflow-y-auto p-6 space-y-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {messages.map((message) => (
-          <div key={message.id} className="space-y-4">
-            <ChatMessage
-              message={{
-                id: parseInt(message.id),
-                text: message.content,
-                sender: message.isUser ? 'user' : 'ai',
-                isTravelPlan: message.isTravelPlan,
-                planDetails: message.planDetails,
-                isShoppingResponse: message.isShoppingResponse,
-                shoppingQuery: message.shoppingQuery
-              }}
-              agentIcon={<ActiveIcon className="h-4 w-4 text-primary" />}
-              onStartEdit={() => {}}
-              onUpdatePlan={() => {}}
-              onRegenerateShoppingResults={() => {}}
-            />
-            {!message.isUser && !message.isTravelPlan && !message.isShoppingResponse && (
-              <MessageActions
-                onCopy={() => onCopy(message.content)}
-                onLike={onLike}
-                onDislike={onDislike}
-                onRegenerate={onRegenerate}
-              />
-            )}
-          </div>
+          <ChatMessage
+            key={message.id}
+            message={message}
+            agentIcon={activeAgentIcon}
+            onCopy={onCopy}
+            onLike={onLike}
+            onDislike={onDislike}
+            onRegenerate={onRegenerate}
+          />
         ))}
         {isLoading && (
           <ChatMessage
             message={{
-              id: Date.now(),
-              text: "Thinking...",
-              sender: 'ai'
+              id: 'loading',
+              content: "Thinking...",
+              isUser: false,
+              timestamp: new Date()
             }}
-            agentIcon={<ActiveIcon className="h-4 w-4 text-primary" />}
-            onStartEdit={() => {}}
-            onUpdatePlan={() => {}}
-            onRegenerateShoppingResults={() => {}}
+            agentIcon={activeAgentIcon}
+            onCopy={onCopy}
+            onLike={onLike}
+            onDislike={onDislike}
+            onRegenerate={onRegenerate}
           />
         )}
       </div>

@@ -1,4 +1,3 @@
-
 import { ChatView } from '@/components/ChatView';
 import { useOutletContext } from 'react-router-dom';
 import { Agent } from '@/components/Layout';
@@ -6,11 +5,10 @@ import { Agent } from '@/components/Layout';
 interface OutletContextType {
   activeAgent: Agent;
   selectedModel: string;
-  chatKey: number;
 }
 
 const Index = () => {
-  const { activeAgent, selectedModel, chatKey } = useOutletContext<OutletContextType>();
+  const { activeAgent, selectedModel } = useOutletContext<OutletContextType>();
 
   if (!activeAgent) {
     return null;
@@ -19,10 +17,8 @@ const Index = () => {
   return (
     <div className="h-full">
       <ChatView 
-        activeAgentName={activeAgent.name} 
-        activeAgentIcon={activeAgent.icon} 
+        activeAgent={activeAgent}
         selectedModel={selectedModel}
-        chatKey={chatKey}
       />
     </div>
   );
