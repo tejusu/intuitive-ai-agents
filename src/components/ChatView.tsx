@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { ChatWelcomeScreen } from './ChatWelcomeScreen';
 import { ChatMessageList } from './ChatMessageList';
 import { ChatInput } from './ChatInput';
-import { TravelPlannerForm, TravelPlanFormValues } from './TravelPlannerForm';
+import { ConversationalTravelPlanner } from './ConversationalTravelPlanner';
 import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
 import { ResearchAssistantForm, ResearchFormValues } from './ResearchAssistantForm';
 import { Message, getAIResponse } from '../utils/chatHelpers';
@@ -19,48 +19,20 @@ export function ChatView({ activeAgent, selectedModel }: ChatViewProps) {
   const [messages, setMessages] = useState<Message[]>(activeAgent.chatHistory || []);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showTravelForm, setShowTravelForm] = useState(false);
   const [showShoppingForm, setShowShoppingForm] = useState(false);
   const [showResearchForm, setShowResearchForm] = useState(false);
 
   // Update messages when activeAgent changes
   useEffect(() => {
     setMessages(activeAgent.chatHistory || []);
-    setShowTravelForm(false);
     setShowShoppingForm(false);
     setShowResearchForm(false);
   }, [activeAgent.name, activeAgent.chatKey]);
 
-  const handleTravelFormSubmit = (values: TravelPlanFormValues) => {
-    const formMessage = `I want to plan a ${values.days}-day trip to ${values.destination} for ${values.travelers} traveler(s) with a ${values.budget} budget, focusing on ${values.interests}.`;
-    
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: formMessage,
-      isUser: true,
-      timestamp: new Date()
-    };
-
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
-    setShowTravelForm(false);
-    setIsLoading(true);
-
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content: "I've created a detailed travel plan for you!",
-        isUser: false,
-        timestamp: new Date(),
-        agentName: activeAgent.name,
-        isTravelPlan: true,
-        planDetails: values
-      };
-      const updatedMessages = [...newMessages, aiResponse];
-      setMessages(updatedMessages);
-      setIsLoading(false);
-    }, 2000);
-  };
+  // Show conversational travel planner for Travel Planner agent
+  if (activeAgent.name === 'Travel Planner' && messages.length === 0) {
+    return <ConversationalTravelPlanner />;
+  }
 
   const handleShoppingFormSubmit = (values: ShoppingFormValues) => {
     const formMessage = `I'm looking for ${values.query} in the ${values.category} category with a budget of ${values.budget}. ${values.preferences ? `Additional preferences: ${values.preferences}` : ''}`;
@@ -128,11 +100,6 @@ export function ChatView({ activeAgent, selectedModel }: ChatViewProps) {
   const handleSendMessage = async (message?: string) => {
     const messageToSend = message || inputValue.trim();
     if (!messageToSend) return;
-
-    if (activeAgent.name === 'Travel Planner' && messages.length === 0) {
-      setShowTravelForm(true);
-      return;
-    }
     
     if (activeAgent.name === 'Shopping Assistant' && messages.length === 0) {
       setShowShoppingForm(true);
@@ -193,16 +160,6 @@ export function ChatView({ activeAgent, selectedModel }: ChatViewProps) {
       handleSendMessage();
     }
   };
-
-  if (showTravelForm) {
-    return (
-      <div className="flex flex-col h-full">
-        <div className="flex-1 flex flex-col items-center justify-center p-8">
-          <TravelPlannerForm onSubmit={handleTravelFormSubmit} />
-        </div>
-      </div>
-    );
-  }
 
   if (showShoppingForm) {
     return (
