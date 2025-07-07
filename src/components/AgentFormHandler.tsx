@@ -1,6 +1,13 @@
 
-import { ShoppingAssistantForm, ShoppingFormValues } from './ShoppingAssistantForm';
+import { ConversationalShoppingAssistant } from './ConversationalShoppingAssistant';
 import { ResearchAssistantForm, ResearchFormValues } from './ResearchAssistantForm';
+
+export interface ShoppingFormValues {
+  query: string;
+  category: string;
+  budget: string;
+  preferences: string;
+}
 
 interface AgentFormHandlerProps {
   showShoppingForm: boolean;
@@ -16,13 +23,7 @@ export function AgentFormHandler({
   onResearchSubmit
 }: AgentFormHandlerProps) {
   if (showShoppingForm) {
-    return (
-      <div className="flex flex-col h-full">
-        <div className="flex-1 flex flex-col items-center justify-center p-8">
-          <ShoppingAssistantForm onSubmit={onShoppingSubmit} />
-        </div>
-      </div>
-    );
+    return <ConversationalShoppingAssistant />;
   }
 
   if (showResearchForm) {

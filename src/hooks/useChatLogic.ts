@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Message, getAIResponse } from '../utils/chatHelpers';
-import { ShoppingFormValues } from '../components/ShoppingAssistantForm';
+import { ShoppingFormValues } from '../components/AgentFormHandler';
 import { ResearchFormValues } from '../components/ResearchAssistantForm';
 import { Agent } from '../components/Layout';
 
